@@ -7,6 +7,9 @@ import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatDelegate
 
+private val ADD_TASK_REQUEST = 1
+
+
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,6 +22,11 @@ class MainActivity : AppCompatActivity() {
 
         loginButton.setOnClickListener {
             println("test")
+        }
+
+        demoButton.setOnClickListener {
+            val intent = Intent(this, ExcerciseSelectionActivity::class.java)
+            startActivityForResult(intent, ADD_TASK_REQUEST)
         }
     }
 }
