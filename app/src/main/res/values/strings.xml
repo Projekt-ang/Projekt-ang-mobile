@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">My application</string>
-    <string name="title_excercise_selection">Select your excercise</string>
+    <string name="title_excercise_selection">Select your exercise:</string>
 </resources>

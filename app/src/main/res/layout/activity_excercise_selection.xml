@@ -14,71 +14,83 @@
         android:text="@string/title_excercise_selection"
         android:textAlignment="center"
         android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TableLayout
+    <LinearLayout
+        android:id="@+id/linearLayoutExcerciseSelection"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
+        android:layout_height="0dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/listReadingTest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_excercise_selection">
 
-        <TableRow
+        <Button
+            android:id="@+id/ReadingTestExcerciseButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center_horizontal">
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Reading with Test"
+            android:textSize="18sp" />
 
-            <Button
-                android:id="@+id/ReadingTestExcerciseButton"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimary"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="Reading with Test"
-                android:textSize="18sp" />
-        </TableRow>
-
-        <TableRow
+        <Button
+            android:id="@+id/SentencesExcerciseButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Sentences"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/FlashcardsExcerciseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Flashcards"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/listReadingTest"
+        android:layout_width="0dp"
+        android:layout_height="352dp"
+        android:layout_marginBottom="32dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayoutTaskSelection"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:orientation="vertical">
 
             <Button
-                android:id="@+id/SentencesExcerciseButton"
+                android:id="@+id/buttonDemoExample"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimary"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="Sentences"
-                android:textSize="18sp" />
+                android:backgroundTint="#009688"
+                android:focusable="true"
+                android:text="Demo_grammar_example" />
 
-        </TableRow>
+        </LinearLayout>
+    </ScrollView>
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/FlashcardsExcerciseButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@color/colorPrimary"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="Flashcards"
-                android:textSize="18sp" />
-        </TableRow>
-
-    </TableLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
