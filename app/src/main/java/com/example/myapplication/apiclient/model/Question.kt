@@ -1,6 +1,10 @@
 package com.example.myapplication.apiclient.model
 
-data class Question(val text: String, val correctAnswer: Int, val answers: Array<String>) {
+import android.os.Parcel
+import android.os.Parcelable
+
+data class Question(val text: String, val correctAnswer: Int, val answers: Array<String>) :
+    Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -21,4 +25,25 @@ data class Question(val text: String, val correctAnswer: Int, val answers: Array
         return result
     }
 
+    constructor(source: Parcel) : this(
+        source.readString()!!,
+        source.readInt(),
+        source.createStringArray()!!
+    )
+
+    override fun describeContents() = 0
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(text)
+        writeInt(correctAnswer)
+        writeStringArray(answers)
+    }
+
+    companion object {
+        @JvmField
+        val CREATOR: Parcelable.Creator<Question> = object : Parcelable.Creator<Question> {
+            override fun createFromParcel(source: Parcel): Question = Question(source)
+            override fun newArray(size: Int): Array<Question?> = arrayOfNulls(size)
+        }
+    }
 }
