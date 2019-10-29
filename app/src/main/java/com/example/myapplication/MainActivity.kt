@@ -3,7 +3,6 @@ package com.example.myapplication
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatDelegate
 
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         demoButton.setOnClickListener {
-            val intent = Intent(this, ExcerciseSelectionActivity::class.java)
+            val intent = Intent(this, ExerciseSelectionActivity::class.java)
             startActivityForResult(intent, ADD_TASK_REQUEST)
         }
     }
