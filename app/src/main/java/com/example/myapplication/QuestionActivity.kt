@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
 import com.example.myapplication.apiclient.model.Question
+import com.example.myapplication.apiclient.model.ReadingWithTest
 import com.example.myapplication.apiclient.service.ReadingWithTestService
 import kotlinx.android.synthetic.main.activity_question.*
 
@@ -16,14 +17,10 @@ class QuestionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
 
-        /*val extras = intent.extras
-        if (extras != null) {
-            val readingWithTest = extras.getParcelable<ReadingWithTest>("readingWithTest")
-            println(readingWithTest!!.questions[0].correctAnswer)
+        val extras = intent.extras
+        val readingWithTest = extras!!.getParcelable<ReadingWithTest>("readingWithTest")
+        println(readingWithTest!!.questions[0].correctAnswer)
 
-        }*/
-
-        val readingWithTest = ReadingWithTestService.getReadingWithTest()
         val questions = readingWithTest.questions
 
         val initialList = ArrayList<String>()

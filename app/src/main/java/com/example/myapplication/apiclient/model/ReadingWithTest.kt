@@ -2,6 +2,7 @@ package com.example.myapplication.apiclient.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.myapplication.R
 
 data class ReadingWithTest(val text: String, val link: String?, val questions: Array<Question>) :
     Parcelable {
@@ -25,26 +26,27 @@ data class ReadingWithTest(val text: String, val link: String?, val questions: A
         return result
     }
 
-    constructor(source: Parcel) : this(
-        source.readString()!!,
-        source.readString(),
-        source.readArray(ClassLoader.getSystemClassLoader()) as Array<Question>
-    )
-
     override fun describeContents() = 0
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(text)
         writeString(link)
-        writeArray(questions)
+        writeInt(questions.size)
+        writeTypedArray(questions, 0)
     }
 
     companion object {
         @JvmField
         val CREATOR: Parcelable.Creator<ReadingWithTest> =
             object : Parcelable.Creator<ReadingWithTest> {
-                override fun createFromParcel(source: Parcel): ReadingWithTest =
-                    ReadingWithTest(source)
+                override fun createFromParcel(source: Parcel): ReadingWithTest {
+                    val text = source.readString()!!
+                    val link = source.readString()
+                    val length = source.readInt()
+                    val questions: Array<Question> = Question.CREATOR.newArray(length)
+                    source.readTypedArray(questions, Question.CREATOR)
+                    return ReadingWithTest(text,link,questions)
+                }
 
                 override fun newArray(size: Int): Array<ReadingWithTest?> = arrayOfNulls(size)
             }
