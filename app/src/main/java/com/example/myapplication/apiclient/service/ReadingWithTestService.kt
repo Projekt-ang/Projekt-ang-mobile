@@ -44,7 +44,7 @@ class ReadingWithTestService {
             val readingTest2 = ReadingWithTest(
                 "", "https://www.youtube.com/watch?v=_QdPW8JrYzQ",
                 arrayOf(
-                    Question("What kink of spam email, or junk mail did James receive?", 1,
+                    Question("What kind of spam email, or junk mail did James receive?", 1,
                         arrayOf("A misleading message from someone you know whose email account has been hacked.",
                                 "A counterfeit message that looks reliable that attempts to trick you into supplying your personal information.",
                                 "An unsolicited commercial email message sent in bulk")

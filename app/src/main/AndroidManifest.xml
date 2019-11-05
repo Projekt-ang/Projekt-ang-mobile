@@ -13,7 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".QuestionActivity"></activity>
+        <activity android:name=".ResultActivity"></activity>
+        <activity android:name=".QuestionActivity" />
         <activity android:name=".ReadingWithTestActivity" />
         <activity android:name=".ExerciseSelectionActivity" />
         <activity android:name=".MainActivity">

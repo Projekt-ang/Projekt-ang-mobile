@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">My application</string>
     <string name="title_excercise_selection">Select your exercise:</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
 </resources>
