@@ -14,7 +14,7 @@ class ResultActivity : AppCompatActivity() {
         val correctAnswers = intent.getIntExtra("correctAnswers", 1)
         val questionsSize = intent.getIntExtra("questions", 1)
 
-        progressBar2.progress = correctAnswers / questionsSize * 100
+        progressBar2.progress = correctAnswers * 100 / questionsSize
         textView3.text = "Udzielono $correctAnswers poprawnych odpowiedzi na $questionsSize"
 
     }

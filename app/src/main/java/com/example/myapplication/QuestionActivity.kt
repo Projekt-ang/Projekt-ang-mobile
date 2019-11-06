@@ -10,7 +10,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.view.View
 import android.widget.AdapterView
-
+import android.widget.ListView
 
 
 class QuestionActivity : AppCompatActivity() {
@@ -57,6 +57,7 @@ class QuestionActivity : AppCompatActivity() {
         }
         buttonNext.setOnClickListener {
             if (currentQuestionCounter == questions.size - 1) {
+                userAnswers[currentQuestionCounter] = selectedItem
                 AlertDialog.Builder(this)
                     .setTitle("Czy jesteś pewny swoich odpowiedzi?")
                     .setPositiveButton(getString(R.string.yes)) { arg0, arg1 ->
@@ -65,6 +66,7 @@ class QuestionActivity : AppCompatActivity() {
                         intent.putExtra("correctAnswers", correctAnswers)
                         intent.putExtra("questions", questions.size)
                         startActivity(intent)
+                        finish()
                     }
                     .setNegativeButton(getString(R.string.no)) { arg0, arg1 -> }
                     .show()
@@ -114,16 +116,24 @@ class QuestionActivity : AppCompatActivity() {
         mAdapter: ArrayAdapter<String>,
         userAnswers: Array<Int?>
     ) {
-        progressBar.progress = (currentQuestionCounter + 1) / (questions.size + 1) * 100
+        progressBar.progress = (currentQuestionCounter + 1) * 100 / (questions.size)
         textView.text = questions[currentQuestionCounter].text
         mAdapter.clear()
+        listView.requestLayout()
+        mAdapter.notifyDataSetChanged()
         listView.clearChoices()
-        if (userAnswers[currentQuestionCounter] != null) {
-            listView.setItemChecked(1,true)
-        }
+        listView.adapter = mAdapter
+
+
         val question = questions[currentQuestionCounter]
         for (answer in question.answers) {
             mAdapter.add(answer)
+        }
+        listView.choiceMode = ListView.CHOICE_MODE_SINGLE
+        if (userAnswers[currentQuestionCounter] != null) {
+            listView.setItemChecked(userAnswers[currentQuestionCounter]!!,true)
+            mAdapter.notifyDataSetChanged()
+            listView.checkedItemPosition
         }
     }
 }
