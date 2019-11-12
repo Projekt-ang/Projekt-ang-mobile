@@ -41,7 +41,8 @@ class QuestionActivity : AppCompatActivity() {
 
         buttonBack.setOnClickListener {
             if (currentQuestionCounter == 0) {
-                AlertDialog.Builder(this).setMessage("Czy chcesz powrócić do treści zadania i przerwać quiz? Dotychczasowy postęp zostanie utrcony.")
+                AlertDialog.Builder(this)
+                    .setMessage("Czy chcesz powrócić do treści zadania i przerwać quiz? Dotychczasowy postęp zostanie utrcony.")
                     .setTitle("Powrót")
                     .setPositiveButton(getString(R.string.yes)) { arg0, arg1 ->
                         finish()
@@ -77,28 +78,6 @@ class QuestionActivity : AppCompatActivity() {
                 loadQuestion(questions, currentQuestionCounter, adapter, userAnswers)
             }
         }
-
-        /*buttonNext.setOnClickListener {
-            if (currentQuestionCounter < questions.size) {
-                if (listView.selectedItemPosition == questions[currentQuestionCounter].correctAnswer) {
-                    println("Good answer")
-                    score++
-                } else {
-                    println("Bad answer")
-                }
-                println("ID = " + listView.selectedItemPosition )
-                currentQuestionCounter++
-                if (currentQuestionCounter < questions.size) {
-                    textView.text = questions[currentQuestionCounter].text
-                    loadQuestion(questions, currentQuestionCounter, adapter)
-                }
-            } else {
-                textView.text = "Score"
-                adapter.clear()
-                adapter.add("You've got " + score + " points out of " + questions.size)
-            }
-        }*/
-
     }
 
     private fun calculateScore(questions: Array<Question>, userAnswers: Array<Int?>): Int {
@@ -116,24 +95,24 @@ class QuestionActivity : AppCompatActivity() {
         mAdapter: ArrayAdapter<String>,
         userAnswers: Array<Int?>
     ) {
-        progressBar.progress = (currentQuestionCounter + 1) * 100 / (questions.size)
+        progressBar.progress = (currentQuestionCounter) * 100 / (questions.size)
         textView.text = questions[currentQuestionCounter].text
         mAdapter.clear()
-        listView.requestLayout()
-        mAdapter.notifyDataSetChanged()
         listView.clearChoices()
         listView.adapter = mAdapter
-
 
         val question = questions[currentQuestionCounter]
         for (answer in question.answers) {
             mAdapter.add(answer)
         }
-        listView.choiceMode = ListView.CHOICE_MODE_SINGLE
         if (userAnswers[currentQuestionCounter] != null) {
-            listView.setItemChecked(userAnswers[currentQuestionCounter]!!,true)
-            mAdapter.notifyDataSetChanged()
-            listView.checkedItemPosition
+           val position = userAnswers[currentQuestionCounter]!!
+            listView.requestFocusFromTouch()
+            listView.setSelection(position)
+
+            listView.performItemClick(
+                listView.getAdapter().getView(position,null,null),position, position.toLong()
+            )
         }
     }
 }
