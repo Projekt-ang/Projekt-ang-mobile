@@ -22,11 +22,10 @@
     <LinearLayout
         android:id="@+id/linearLayoutExcerciseSelection"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/listReadingTest"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title_excercise_selection">
@@ -68,12 +67,13 @@
     <ScrollView
         android:id="@+id/listReadingTest"
         android:layout_width="0dp"
-        android:layout_height="352dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="32dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutExcerciseSelection">
 
         <LinearLayout
             android:id="@+id/linearLayoutTaskSelection"
