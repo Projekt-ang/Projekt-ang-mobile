@@ -18,20 +18,24 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_selection)
 
-        ReadingTestExcerciseButton.setOnClickListener {
+        ReadingTestExerciseButton.setOnClickListener {
             if (listReadingTest.visibility == View.VISIBLE) listReadingTest.visibility = View.GONE else listReadingTest.visibility = View.VISIBLE
         }
 
-        SentencesExcerciseButton.setOnClickListener {
+        SentencesExerciseButton.setOnClickListener {
 
         }
 
-        FlashcardsExcerciseButton.setOnClickListener {
+        FlashcardsExerciseButton.setOnClickListener {
 
         }
 
         buttonDemoExample.setOnClickListener {
             val intent = Intent(this, ReadingWithTestActivity::class.java)
+            startActivity(intent)
+        }
+        ExerciseSearchButton.setOnClickListener {
+            val intent = Intent(this, ExerciseSearchActivity::class.java)
             startActivity(intent)
         }
 

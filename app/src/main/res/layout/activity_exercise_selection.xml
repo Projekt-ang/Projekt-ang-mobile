@@ -31,7 +31,7 @@
         app:layout_constraintTop_toBottomOf="@+id/title_excercise_selection">
 
         <Button
-            android:id="@+id/ReadingTestExcerciseButton"
+            android:id="@+id/ReadingTestExerciseButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
@@ -42,7 +42,7 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/SentencesExcerciseButton"
+            android:id="@+id/SentencesExerciseButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
@@ -53,7 +53,7 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/FlashcardsExcerciseButton"
+            android:id="@+id/FlashcardsExerciseButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
@@ -62,6 +62,18 @@
             android:gravity="center"
             android:text="Flashcards"
             android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/ExerciseSearchButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="Search for exercise"
+            android:textSize="18sp" />
+
     </LinearLayout>
 
     <ScrollView
@@ -69,7 +81,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="32dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
