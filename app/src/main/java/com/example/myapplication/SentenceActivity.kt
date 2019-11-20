@@ -5,10 +5,11 @@ import androidx.appcompat.app.AppCompatActivity
 
 class SentenceActivity : AppCompatActivity() {
 
-    private val pressCounter = 0;
-    private val maxPressCounter = 10;
-    private val words: Array<String> = arrayOf("oranges", "Kamil", "likes");
-    private val answer = "Kamil likes oranges";
+    private val pressCounter = 0
+    private val maxPressCounter = 10
+    private val words: Array<String> = arrayOf("oranges", "Kamil", "likes")
+    private val answer = "Kamil likes oranges"
+
     
 
     override fun onCreate(savedInstanceState: Bundle?) {
