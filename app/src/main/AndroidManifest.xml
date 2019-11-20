@@ -13,9 +13,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ResultActivity"></activity>
+        <activity android:name=".ResultActivity" />
         <activity android:name=".QuestionActivity" />
         <activity android:name=".ReadingWithTestActivity" />
+        <activity android:name=".SentenceActivity"/>
         <activity android:name=".ExerciseSelectionActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -24,6 +25,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
 
         <meta-data
             android:name="preloaded_fonts"

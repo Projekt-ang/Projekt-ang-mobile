@@ -3,4 +3,9 @@
     <string name="title_excercise_selection">Select your exercise:</string>
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
+
+    // Sentences Activity
+    <string name="Sentence_Application_Header">Dopasuj odpowiednio słowa by utworzyć zdanie!</string>
+    <string name="Sentence_Activity_Question">Maciek lubi pomarańcze</string>
+    <string name="Sentences_Activity_Your_words">Twoje słowa:</string>
 </resources>

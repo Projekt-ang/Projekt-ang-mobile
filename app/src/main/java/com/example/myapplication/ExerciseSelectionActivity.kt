@@ -1,13 +1,13 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_exercise_selection.*
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.android.synthetic.main.activity_exercise_selection.*
 
 
 class ExerciseSelectionActivity : AppCompatActivity() {
@@ -22,7 +22,11 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         SentencesExcerciseButton.setOnClickListener {
+            var message = Toast.makeText(applicationContext, "Dziękuję", Toast.LENGTH_LONG)
+            message.show()
 
+            val mainActivity: Intent = Intent(applicationContext, SentenceActivity::class.java)
+            startActivity(mainActivity)
         }
 
         FlashcardsExcerciseButton.setOnClickListener {
