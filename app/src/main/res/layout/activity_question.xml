@@ -47,7 +47,8 @@
             android:id="@+id/buttonBack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="Back">
+            android:layout_weight="1"
+            android:text="Back">
         </Button>
         <Button
             android:id="@+id/buttonNext"

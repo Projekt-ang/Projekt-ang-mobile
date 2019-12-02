@@ -11,7 +11,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/SentencesActivityHeader"
+        android:id="@+id/sentencesActivityHeader"
         android:gravity="center"
         android:text="@string/Sentence_Application_Header"
         android:textSize="24dp"
@@ -20,21 +20,21 @@
 
     <LinearLayout
         android:background="@drawable/border"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="24dp"
         android:layout_width="320dp"
-        android:layout_height="160dp"
+        android:layout_height="100dp"
         android:orientation="vertical"
         android:layout_gravity="center"
         android:gravity="center"
         >
 
         <TextView
-            android:id="@+id/SentenceActivityQuestion"
+            android:id="@+id/sentenceActivityQuestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Sentence_Activity_Question"
             android:textAlignment="center"
-            android:textSize="24dp"
+            android:textSize="24sp"
             android:textColor="#fff"/>
 
     </LinearLayout>
@@ -51,11 +51,11 @@
         android:background="@drawable/ic_launcher_background"
         android:layout_width="320dp"
         android:layout_height="160dp"
-        android:textSize="32dp"
+        android:textSize="24dp"
         />
 
     <TextView
-        android:id="@+id/YourWords"
+        android:id="@+id/yourWords"
         android:text="@string/Sentences_Activity_Your_words"
         android:textSize="24dp"
         android:textColor="#fff"
@@ -63,16 +63,17 @@
         android:layout_marginRight="28dp"
         android:layout_marginLeft="28dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/LayoutParent"
         android:layout_marginRight="24dp"
         android:layout_marginLeft="24dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:orientation="horizontal"
-        >
+        android:layout_gravity="center"
+        android:gravity="center">
 
     </LinearLayout>
 
