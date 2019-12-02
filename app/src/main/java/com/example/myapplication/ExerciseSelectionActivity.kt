@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_exercise_selection.*
 import android.content.Intent
-import android.view.DragAndDropPermissions
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
@@ -14,25 +13,29 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import kotlin.random.Random
 
 
+
+
 class ExerciseSelectionActivity : AppCompatActivity() {
 
     private var previousSearch = ""
 
     private var buttonsArray: Array<Button> = arrayOf()
 
+
     private fun removeButtons(layout: LinearLayout){
         for (button in this.buttonsArray){
             layout.removeView(button)
         }
+        buttonDemoExample.visibility = View.GONE
         this.buttonsArray = arrayOf()
     }
-
+//Creates list of buttons in a given view with given names.
     private fun createButtons(buttonNames: Array<String>, DestLinearLayout: LinearLayout, thisContext: Context): Array<Button> {
 
         //array of created buttons. can be used to edit them.
         var buttonsArr: Array<Button>
         buttonsArr = arrayOf()
-
+        //creates button item and adds it to a given view
         for (buttonName in buttonNames){
             val newButton = Button(thisContext)
             newButton.layoutParams = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.MATCH_PARENT, ConstraintLayout.LayoutParams.MATCH_PARENT)
@@ -45,10 +48,10 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
         this.buttonsArray = buttonsArr
         Toast.makeText(applicationContext, "Showing " + this.buttonsArray.size + " results", Toast.LENGTH_SHORT).show()
-
+        //returns Array of buttons for future refference i.e. button editing, etc, but the array is also added to global variable
         return buttonsArr
     }
-
+//switches view's visibility gicen a view and visibiliti to which and which from to change.
     private fun switchVisibility(layout: View, visibilityValue: Int){
         if (layout.visibility == View.VISIBLE){
             layout.visibility = visibilityValue
@@ -61,7 +64,10 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_selection)
 
-        ReadingTestExerciseButton.setOnClickListener {
+
+        buttonReadingTestExercise.setOnClickListener {
+            this.removeButtons(LinearLayoutTaskSelection)
+            buttonDemoExample.visibility = View.VISIBLE
             this.switchVisibility(LinearLayoutTaskSelection, View.GONE)
         }
 
@@ -83,6 +89,8 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         exerciseSearchButton.setOnClickListener {
             if (exerciseSearchText.text.toString() == "Search For Exercises by title..." || exerciseSearchText.text.toString() == this.previousSearch) Toast.makeText(applicationContext, "Write a search phrase first!", Toast.LENGTH_SHORT).show()
             else {
+                //remove buttons and create new ones
+                LinearLayoutTaskSelection.visibility = View.VISIBLE
                 this.removeButtons(LinearLayoutTaskSelection)
                 val text = exerciseSearchText.text
                 var buttonNames = Array(Random.nextInt(1,5)) { i -> "$text " + (i+1) }
@@ -92,13 +100,12 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         //Creating buttons for Task Selection List
-        val buttonAmount = 15
-        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
-        this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
+//        val buttonAmount = 15
+//        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
+//        this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
 
         FlashcardsExerciseButton.setOnClickListener {
-            this.removeButtons(LinearLayoutTaskSelection)
-            Toast.makeText(applicationContext, "buttonsArray now has " + this.buttonsArray.size + " buttons", Toast.LENGTH_SHORT).show()
+
         }
 
     }
