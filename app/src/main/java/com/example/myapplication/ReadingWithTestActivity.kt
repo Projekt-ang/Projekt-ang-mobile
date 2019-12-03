@@ -28,8 +28,10 @@ class ReadingWithTestActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reading_with_test)
-
-        val readingWithTest = ReadingWithTestService.getReadingWithTest()
+        val readingWithTest = if (intent.hasExtra("readingWithTest"))
+            intent.extras!!.getParcelable("readingWithTest")!!
+        else
+            ReadingWithTestService.getReadingWithTest()
 
         buttonQuestion.setOnClickListener {
             val intent = Intent(this, QuestionActivity::class.java)
@@ -50,6 +52,13 @@ class ReadingWithTestActivity : AppCompatActivity() {
             webview.setWebChromeClient(WebChromeClient())
             webview.loadUrl(readingWithTest.link)
             linearLayoutReadingWithTest.addView(webview)
+        }
+
+        if (intent.hasExtra("lookup")) {
+            buttonQuestion.text = getString(R.string.close)
+            buttonQuestion.setOnClickListener {
+                finish()
+            }
         }
     }
 }

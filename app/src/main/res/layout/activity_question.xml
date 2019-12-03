@@ -11,10 +11,9 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         android:indeterminate="false"
         app:layout_constraintBottom_toTopOf="@id/textView"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView"
@@ -29,26 +28,36 @@
 
     <ListView
         android:id="@+id/listView"
-        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/textView"
+        android:layout_marginTop="20dp"
         android:choiceMode="singleChoice"
-        android:listSelector="@color/colorGray"/>
+        android:listSelector="@color/colorGray"
+        app:layout_constraintTop_toBottomOf="@id/textView" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        app:layout_constraintBottom_toBottomOf="parent">
+
         <Button
             android:id="@+id/buttonBack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1" android:text="Back">
+            android:layout_weight="1"
+            android:text="Back">
         </Button>
+
+        <Button
+            android:id="@+id/buttonLookup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1.25"
+            android:text="Quiz">
+        </Button>
+
         <Button
             android:id="@+id/buttonNext"
             android:layout_width="match_parent"

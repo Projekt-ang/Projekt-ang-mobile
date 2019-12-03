@@ -22,18 +22,15 @@ class QuestionActivity : AppCompatActivity() {
         val readingWithTest = intent.extras!!.getParcelable<ReadingWithTest>("readingWithTest")
         val questions = readingWithTest!!.questions
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList<String>())
-        listView.adapter = adapter
+        val questionsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList<String>())
+        listView.adapter = questionsAdapter
 
+        var selectedItem = -1
         var currentQuestionCounter = 0
-        var score = 0
-
         val userAnswers = arrayOfNulls<Int>(questions.size)
 
         textView.text = questions[currentQuestionCounter].text
-        loadQuestion(questions, currentQuestionCounter, adapter, userAnswers)
-
-        var selectedItem = -1
+        loadQuestion(questions, currentQuestionCounter, questionsAdapter, userAnswers)
 
         listView.setOnItemClickListener { adapterView: AdapterView<*>, view1: View, i: Int, l: Long ->
             selectedItem = i
@@ -42,8 +39,7 @@ class QuestionActivity : AppCompatActivity() {
         buttonBack.setOnClickListener {
             if (currentQuestionCounter == 0) {
                 AlertDialog.Builder(this)
-                    .setMessage("Czy chcesz powrócić do treści zadania i przerwać quiz? Dotychczasowy postęp zostanie utrcony.")
-                    .setTitle("Powrót")
+                    .setMessage("Do you want to get back? All your current progress will be lost")
                     .setPositiveButton(getString(R.string.yes)) { arg0, arg1 ->
                         finish()
                     }
@@ -53,14 +49,33 @@ class QuestionActivity : AppCompatActivity() {
                 if (selectedItem != -1)
                     userAnswers[currentQuestionCounter] = selectedItem
                 currentQuestionCounter--
-                loadQuestion(questions, currentQuestionCounter, adapter, userAnswers)
+                selectedItem = loadQuestion(
+                    questions,
+                    currentQuestionCounter,
+                    questionsAdapter,
+                    userAnswers
+                )
+            }
+        }
+        buttonLookup.setOnClickListener {
+            var lastSelected = -1
+            if (selectedItem != -1)
+                lastSelected = selectedItem
+
+            val intent = Intent(this, ReadingWithTestActivity::class.java)
+            intent.putExtra("lookup",true)
+            intent.putExtra("readingWithTest",readingWithTest)
+            startActivity(intent)
+            if (lastSelected != -1) {
+                selectedItem = lastSelected
+                performClick(listView, selectedItem)
             }
         }
         buttonNext.setOnClickListener {
             if (currentQuestionCounter == questions.size - 1) {
                 userAnswers[currentQuestionCounter] = selectedItem
                 AlertDialog.Builder(this)
-                    .setTitle("Czy jesteś pewny swoich odpowiedzi?")
+                    .setTitle("Are you sure?")
                     .setPositiveButton(getString(R.string.yes)) { arg0, arg1 ->
                         val correctAnswers = calculateScore(questions, userAnswers)
                         val intent = Intent(this, ResultActivity::class.java)
@@ -75,14 +90,14 @@ class QuestionActivity : AppCompatActivity() {
                 if (selectedItem != -1)
                     userAnswers[currentQuestionCounter] = selectedItem
                 currentQuestionCounter++
-                loadQuestion(questions, currentQuestionCounter, adapter, userAnswers)
+                selectedItem = loadQuestion(questions, currentQuestionCounter, questionsAdapter, userAnswers)
             }
         }
     }
 
     private fun calculateScore(questions: Array<Question>, userAnswers: Array<Int?>): Int {
         var score = 0
-        for (i in 0 until questions.size) {
+        for (i in questions.indices) {
             if (userAnswers[i] == questions[i].correctAnswer)
                 score++
         }
@@ -94,25 +109,39 @@ class QuestionActivity : AppCompatActivity() {
         currentQuestionCounter: Int,
         mAdapter: ArrayAdapter<String>,
         userAnswers: Array<Int?>
-    ) {
+    ): Int {
         progressBar.progress = (currentQuestionCounter) * 100 / (questions.size)
         textView.text = questions[currentQuestionCounter].text
+
         mAdapter.clear()
+        val question = questions[currentQuestionCounter]
+        for (answer in question.answers) mAdapter.add(answer)
+
         listView.clearChoices()
         listView.adapter = mAdapter
 
-        val question = questions[currentQuestionCounter]
-        for (answer in question.answers) {
-            mAdapter.add(answer)
-        }
-        if (userAnswers[currentQuestionCounter] != null) {
-           val position = userAnswers[currentQuestionCounter]!!
-            listView.requestFocusFromTouch()
-            listView.setSelection(position)
+        var currentSel = -1;
 
-            listView.performItemClick(
-                listView.getAdapter().getView(position,null,null),position, position.toLong()
-            )
+        if (userAnswers[currentQuestionCounter] != null) {
+            val position = userAnswers[currentQuestionCounter]!!
+            performClick(listView, position)
+            currentSel = position
         }
+        if (buttonNext.text == getString(R.string.finish)) {
+            buttonNext.text = getString(R.string.next)
+        }
+        if (currentQuestionCounter >= questions.size - 1) {
+            buttonNext.text = getString(R.string.finish)
+        }
+        return currentSel
+    }
+
+    private fun performClick(listView: ListView, position: Int) {
+        listView.requestFocusFromTouch()
+        listView.setSelection(position)
+
+        listView.performItemClick(
+            listView.adapter.getView(position, null, null), position, position.toLong()
+        )
     }
 }
