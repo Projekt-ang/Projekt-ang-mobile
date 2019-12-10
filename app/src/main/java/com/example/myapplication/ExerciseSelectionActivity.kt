@@ -79,6 +79,10 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         ExerciseGoToSearchButton.setOnClickListener {
             this.switchVisibility(LinearLayoutExerciseSearch, View.GONE)
         }
+        FlashcardsExerciseButton.setOnClickListener {
+            val intent = Intent(this, FalshcardsActivity::class.java)
+            this.startActivity(intent)
+        }
 
 
         buttonDemoExample.setOnClickListener {
@@ -104,9 +108,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 //        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
 //        this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
 
-        FlashcardsExerciseButton.setOnClickListener {
-
-        }
 
     }
 
