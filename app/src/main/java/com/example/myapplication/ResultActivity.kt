@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.myapplication.apiclient.model.ReadingWithTest
 import kotlinx.android.synthetic.main.activity_result.*
 
 class ResultActivity : AppCompatActivity() {
@@ -12,7 +11,7 @@ class ResultActivity : AppCompatActivity() {
         setContentView(R.layout.activity_result)
 
         val correctAnswers = intent.getIntExtra("correctAnswers", 1)
-        val questionsSize = intent.getIntExtra("questions", 1)
+        val questionsSize = intent.getIntExtra("questionBackups", 1)
 
         progressBar2.progress = correctAnswers * 100 / questionsSize
         if (correctAnswers == 1)

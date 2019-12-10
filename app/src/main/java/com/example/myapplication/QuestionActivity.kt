@@ -3,8 +3,8 @@ package com.example.myapplication
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import com.example.myapplication.apiclient.model.Question
-import com.example.myapplication.apiclient.model.ReadingWithTest
+import com.example.myapplication.apiclient.model.QuestionBackup
+import com.example.myapplication.apiclient.model.ReadingWithTestBackup
 import kotlinx.android.synthetic.main.activity_question.*
 import android.app.AlertDialog
 import android.content.Intent
@@ -19,8 +19,8 @@ class QuestionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
 
-        val readingWithTest = intent.extras!!.getParcelable<ReadingWithTest>("readingWithTest")
-        val questions = readingWithTest!!.questions
+        val readingWithTest = intent.extras!!.getParcelable<ReadingWithTestBackup>("readingWithTest")
+        val questions = readingWithTest!!.questionBackups
 
         val questionsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList<String>())
         listView.adapter = questionsAdapter
@@ -80,7 +80,7 @@ class QuestionActivity : AppCompatActivity() {
                         val correctAnswers = calculateScore(questions, userAnswers)
                         val intent = Intent(this, ResultActivity::class.java)
                         intent.putExtra("correctAnswers", correctAnswers)
-                        intent.putExtra("questions", questions.size)
+                        intent.putExtra("questionBackups", questions.size)
                         startActivity(intent)
                         finish()
                     }
@@ -95,26 +95,26 @@ class QuestionActivity : AppCompatActivity() {
         }
     }
 
-    private fun calculateScore(questions: Array<Question>, userAnswers: Array<Int?>): Int {
+    private fun calculateScore(questionBackups: Array<QuestionBackup>, userAnswers: Array<Int?>): Int {
         var score = 0
-        for (i in questions.indices) {
-            if (userAnswers[i] == questions[i].correctAnswer)
+        for (i in questionBackups.indices) {
+            if (userAnswers[i] == questionBackups[i].correctAnswer)
                 score++
         }
         return score
     }
 
     private fun loadQuestion(
-        questions: Array<Question>,
+        questionBackups: Array<QuestionBackup>,
         currentQuestionCounter: Int,
         mAdapter: ArrayAdapter<String>,
         userAnswers: Array<Int?>
     ): Int {
-        progressBar.progress = (currentQuestionCounter) * 100 / (questions.size)
-        textView.text = questions[currentQuestionCounter].text
+        progressBar.progress = (currentQuestionCounter) * 100 / (questionBackups.size)
+        textView.text = questionBackups[currentQuestionCounter].text
 
         mAdapter.clear()
-        val question = questions[currentQuestionCounter]
+        val question = questionBackups[currentQuestionCounter]
         for (answer in question.answers) mAdapter.add(answer)
 
         listView.clearChoices()
@@ -130,7 +130,7 @@ class QuestionActivity : AppCompatActivity() {
         if (buttonNext.text == getString(R.string.finish)) {
             buttonNext.text = getString(R.string.next)
         }
-        if (currentQuestionCounter >= questions.size - 1) {
+        if (currentQuestionCounter >= questionBackups.size - 1) {
             buttonNext.text = getString(R.string.finish)
         }
         return currentSel

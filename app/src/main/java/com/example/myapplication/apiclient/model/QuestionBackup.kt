@@ -3,13 +3,13 @@ package com.example.myapplication.apiclient.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class Question(val text: String, val correctAnswer: Int, val answers: Array<String>) :
+data class QuestionBackup(val text: String, val correctAnswer: Int, val answers: Array<String>) :
     Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Question
+        other as QuestionBackup
 
         if (text != other.text) return false
         if (correctAnswer != other.correctAnswer) return false
@@ -41,9 +41,9 @@ data class Question(val text: String, val correctAnswer: Int, val answers: Array
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<Question> = object : Parcelable.Creator<Question> {
-            override fun createFromParcel(source: Parcel): Question = Question(source)
-            override fun newArray(size: Int): Array<Question?> = arrayOfNulls(size)
+        val CREATOR: Parcelable.Creator<QuestionBackup> = object : Parcelable.Creator<QuestionBackup> {
+            override fun createFromParcel(source: Parcel): QuestionBackup = QuestionBackup(source)
+            override fun newArray(size: Int): Array<QuestionBackup?> = arrayOfNulls(size)
         }
     }
 }

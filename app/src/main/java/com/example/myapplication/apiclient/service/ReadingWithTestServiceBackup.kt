@@ -1,14 +1,14 @@
 package com.example.myapplication.apiclient.service
 
-import com.example.myapplication.apiclient.model.Question
-import com.example.myapplication.apiclient.model.ReadingWithTest
+import com.example.myapplication.apiclient.model.QuestionBackup
+import com.example.myapplication.apiclient.model.ReadingWithTestBackup
 import kotlin.random.Random
 
-class ReadingWithTestService {
+class ReadingWithTestServiceBackup {
     companion object {
-        fun getReadingWithTest() : ReadingWithTest {
-            val arr: ArrayList<ReadingWithTest> = ArrayList()
-            val readingTest1 = ReadingWithTest(
+        fun getReadingWithTest() : ReadingWithTestBackup {
+            val arr: ArrayList<ReadingWithTestBackup> = ArrayList()
+            val readingTest1 = ReadingWithTestBackup(
                     "Every time you're online, you are bombarded by pictures, articles, links and videos trying to tell their story. Unfortunately, not all of these stories are true. Sometimes they want you to click on another story or advertisement at their own site, other times they want to upset people for political reasons. These days it's so easy to share information. These stories circulate quickly, and the result is … fake news.\n" +
                     "\n" +
                     "There is a range of fake news: from crazy stories which people easily recognise to more subtle types of misinformation. Experts in media studies and online psychology have been examining the fake news phenomenon. Read these tips, and don't get fooled!\n" +
@@ -28,31 +28,31 @@ class ReadingWithTestService {
                     "If you know these things about online news, and can apply them in your everyday life, then you have the control over what to read, what to believe and most importantly what to share. If you find a news story that you know is fake, the most important advice is: don't share it!",
                     null,
                     arrayOf(
-                        Question("What is the best title for the text?", 1,
+                        QuestionBackup("What is the best title for the text?", 1,
                             arrayOf("Experts share dangers of fake news",
                                     "Experts share top tips for resisting fake news",
                                     "How to create fake news: a guide",
                                     "Tips on how to read the news online")
                         ),
-                        Question("Which reason is NOT given for an online fake news story?", 2,
+                        QuestionBackup("Which reason is NOT given for an online fake news story?", 2,
                             arrayOf("To convince people of a political view",
                                 "To make people angry or sad",
                                 "To plant a virus in your computer")
                         )
                     )
             )
-            val readingTest2 = ReadingWithTest(
+            val readingTest2 = ReadingWithTestBackup(
                 "", "https://www.youtube.com/watch?v=_QdPW8JrYzQ",
                 arrayOf(
-                    Question("What kind of spam email, or junk mail did James receive?", 1,
+                    QuestionBackup("What kind of spam email, or junk mail did James receive?", 1,
                         arrayOf("A misleading message from someone you know whose email account has been hacked.",
                                 "A counterfeit message that looks reliable that attempts to trick you into supplying your personal information.",
                                 "An unsolicited commercial email message sent in bulk")
                     ),
-                    Question("Does James believe he will receive gold?", 1,
+                    QuestionBackup("Does James believe he will receive gold?", 1,
                         arrayOf("Yes", "No")
                     ),
-                    Question("How much gold does James want Solomon to ship to him?", 2,
+                    QuestionBackup("How much gold does James want Solomon to ship to him?", 2,
                         arrayOf("25 kilograms",
                                 "50 kgs",
                                 "a metric ton")
