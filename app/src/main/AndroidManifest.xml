@@ -18,6 +18,7 @@
         <activity android:name=".ReadingWithTestActivity" />
         <activity android:name=".SentenceActivity"/>
         <activity android:name=".ExerciseSelectionActivity" />
+        <activity android:name=".FlashcardsActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

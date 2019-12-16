@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".SentenceActivity"
     android:background="@drawable/background_gradient">
-    
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,16 +16,19 @@
         android:text="@string/Sentence_Application_Header"
         android:textSize="24dp"
         android:padding="12dp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:background="@drawable/border"
+        android:layout_margin="16dp"/>
 
     <LinearLayout
-        android:background="@drawable/border"
-        android:layout_marginTop="24dp"
-        android:layout_width="320dp"
-        android:layout_height="100dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="center"
-        android:gravity="center"
+
+        android:gravity="bottom"
+
         >
 
         <TextView
@@ -33,25 +36,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/Sentence_Activity_Question"
-            android:textAlignment="center"
+
             android:textSize="24sp"
             android:textColor="#fff"/>
 
+            <View
+                android:background="#fff"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:padding="6dp"
+                />
+
+
+
+
     </LinearLayout>
+
+
 
     <EditText
         android:id="@+id/EditText"
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+
         android:focusable="false"
         android:clickable="false"
         android:padding="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:gravity="center"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:textColor="#000"
-        android:background="@drawable/ic_launcher_background"
-        android:layout_width="320dp"
-        android:layout_height="160dp"
         android:textSize="24dp"
+        android:gravity="top"
+
         />
 
     <TextView
@@ -59,23 +75,29 @@
         android:text="@string/Sentences_Activity_Your_words"
         android:textSize="24dp"
         android:textColor="#fff"
-        android:layout_marginTop="30dp"
-        android:layout_marginRight="28dp"
-        android:layout_marginLeft="28dp"
+
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
+    <com.nex3z.flowlayout.FlowLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        app:flChildSpacingForLastRow="align"
+        app:flRowSpacing="8dp"
         android:id="@+id/LayoutParent"
-        android:layout_marginRight="24dp"
-        android:layout_marginLeft="24dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="center"
-        android:gravity="center">
+        android:gravity="center"
 
-    </LinearLayout>
+        >
+
+    </com.nex3z.flowlayout.FlowLayout>
 
 </LinearLayout>
 

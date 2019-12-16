@@ -22,15 +22,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         SentencesExcerciseButton.setOnClickListener {
-            var message = Toast.makeText(applicationContext, "Dziękuję", Toast.LENGTH_LONG)
-            message.show()
-
-            val mainActivity: Intent = Intent(applicationContext, SentenceActivity::class.java)
+            val mainActivity = Intent(applicationContext, SentenceActivity::class.java)
             startActivity(mainActivity)
         }
 
         FlashcardsExcerciseButton.setOnClickListener {
-
+            val mainActivity = Intent(applicationContext, FlashcardsActivity::class.java)
+            startActivity(mainActivity)
         }
 
         buttonDemoExample.setOnClickListener {

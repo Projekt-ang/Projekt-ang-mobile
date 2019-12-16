@@ -1,20 +1,24 @@
 package com.example.myapplication
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import com.example.myapplication.R.id.LayoutParent
+import com.nex3z.flowlayout.FlowLayout
 import java.util.*
 
 class SentenceActivity : AppCompatActivity() {
 
     private var pressCounter = 0
-    private val maxPressCounter = 10
-    private var keys = arrayOf("oranges ", "Kamil ", "much ", "very ", "likes ")
+    private val maxPressCounter = 5
+    private var keys = arrayOf("oranges ", "Kamil ", "much", "very ", "likes ")
     private val answer = "Kamil likes oranges very much"
     private lateinit var sentencesActivityHeader: TextView
     private lateinit var sentenceActivityQuestion: TextView
@@ -28,7 +32,7 @@ class SentenceActivity : AppCompatActivity() {
 
         for (key in keys) {
             addView(
-                findViewById(R.id.LayoutParent), key,
+                findViewById(LayoutParent), key,
                 findViewById(R.id.EditText)
             )
         }
@@ -45,19 +49,20 @@ class SentenceActivity : AppCompatActivity() {
         return ar
     }
 
-    private fun addView(viewParent: LinearLayout, text: String, editText: EditText) {
-        val linearLayoutParams = LinearLayout.LayoutParams(
+    private fun addView(viewParent: FlowLayout, text: String, editText: EditText) {
+        val flowLayoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        linearLayoutParams.rightMargin = 20
+        flowLayoutParams.rightMargin = 20
 
         val textView = TextView(this)
 
-        textView.layoutParams = linearLayoutParams
-        textView.background = AppCompatResources.getDrawable(this, R.drawable.bgpink)
-        ContextCompat.getColor(this, R.color.colorAccent)
-        textView.gravity = Gravity.CENTER
+        textView.layoutParams = flowLayoutParams
+        textView.background = AppCompatResources.getDrawable(this, R.drawable.border_sentence)
+        ContextCompat.getColor(this, R.color.colorLight)
+        textView.gravity = Gravity.NO_GRAVITY
+        textView.setPadding(36,16,36,16)
         textView.text = text
         textView.isClickable = true
         textView.isFocusable = true
@@ -88,23 +93,79 @@ class SentenceActivity : AppCompatActivity() {
 
     }
 
+    /*
+    private fun reverseView(viewParent: FlowLayout, text: String) {
+        val flowLayoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        flowLayoutParams.rightMargin = 20
+
+        val textView = TextView(this)
+
+        textView.layoutParams = flowLayoutParams
+        textView.background = AppCompatResources.getDrawable(this, R.drawable.border_sentence)
+        ContextCompat.getColor(this, R.color.colorGray)
+        textView.gravity = Gravity.NO_GRAVITY
+        textView.setPadding(36,16,36,16)
+        textView.text = text
+        textView.isClickable = true
+        textView.isFocusable = true
+        textView.textSize = 24f
+
+
+        sentencesActivityHeader = findViewById(R.id.sentencesActivityHeader)
+        sentenceActivityQuestion = findViewById(R.id.sentenceActivityQuestion)
+        yourWords = findViewById(R.id.yourWords)
+
+        textView.setOnClickListener {
+            if (pressCounter < maxPressCounter) {
+                if (pressCounter == 0)
+
+                // miejsce na animacje
+                textView.animate().alpha(0f).duration = 300
+                pressCounter++
+
+                // miejsce na animacje
+                textView.animate().alpha(0f).duration = 300
+                pressCounter++
+
+                if (pressCounter == maxPressCounter)
+                    doValidate()
+
+
+            }
+        }
+    }
+    */
+
+
+
+
+    @SuppressLint("WrongConstant")
     private fun doValidate() {
         pressCounter = 0
         val editText = findViewById<EditText>(R.id.EditText)
-        val linearLayout = findViewById<LinearLayout>(R.id.LayoutParent)
+        val flowLayout = findViewById<FlowLayout>(LayoutParent)
 
         if (editText.text.toString() == answer) {
             editText.setText("")
+            val toast = Toast.makeText(this, "Dobrze!", 1000)
+            toast.show()
         } else {
             editText.setText("")
+            val toast = Toast.makeText(this, "Żle!", 1000)
+            toast.show()
         }
 
         keys = shuffleArray(keys)
-        linearLayout.removeAllViews()
+        flowLayout.removeAllViews()
 
         for (key in keys) {
-            addView(linearLayout, key, editText)
+            addView(flowLayout, key, editText)
         }
+
+
     }
 
 
