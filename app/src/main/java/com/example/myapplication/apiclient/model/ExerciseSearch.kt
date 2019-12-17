@@ -3,7 +3,7 @@ package com.example.myapplication.apiclient.model
 import android.os.Parcel
 import android.os.Parcelable
 
-data class ExerciseSearch(val text: String, val link: String?, val questions: Array<Question>) :
+data class ExerciseSearch(val text: String, val link: String?, val questionBackups: Array<QuestionBackup>) :
     Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -13,7 +13,7 @@ data class ExerciseSearch(val text: String, val link: String?, val questions: Ar
 
         if (text != other.text) return false
         if (link != other.link) return false
-        if (!questions.contentEquals(other.questions)) return false
+        if (!questionBackups.contentEquals(other.questionBackups)) return false
 
         return true
     }
@@ -21,14 +21,14 @@ data class ExerciseSearch(val text: String, val link: String?, val questions: Ar
     override fun hashCode(): Int {
         var result = text.hashCode()
         result = 31 * result + (link?.hashCode() ?: 0)
-        result = 31 * result + questions.contentHashCode()
+        result = 31 * result + questionBackups.contentHashCode()
         return result
     }
 
     constructor(source: Parcel) : this(
         source.readString()!!,
         source.readString(),
-        source.readArray(ClassLoader.getSystemClassLoader()) as Array<Question>
+        source.readArray(ClassLoader.getSystemClassLoader()) as Array<QuestionBackup>
     )
 
     override fun describeContents() = 0
@@ -36,7 +36,7 @@ data class ExerciseSearch(val text: String, val link: String?, val questions: Ar
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(text)
         writeString(link)
-        writeArray(questions)
+        writeArray(questionBackups)
     }
 
     companion object {

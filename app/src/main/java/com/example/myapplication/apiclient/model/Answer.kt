@@ -4,33 +4,33 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-class ReadingVideoTest() : Parcelable {
-    @SerializedName("text")
+class Answer() : Parcelable {
+    @SerializedName("answer")
     var text: String? = null
 
-    @SerializedName("questions")
-    var questions: List<Question>? = null
+    @SerializedName("correct")
+    var correct: Boolean? = null
 
     constructor(parcel: Parcel) : this() {
         text = parcel.readString()
-        questions = parcel.createTypedArrayList(Question)
+        correct = parcel.readValue(Boolean::class.java.classLoader) as? Boolean
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(text)
-        parcel.writeTypedList(questions)
+        parcel.writeValue(correct)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<ReadingVideoTest> {
-        override fun createFromParcel(parcel: Parcel): ReadingVideoTest {
-            return ReadingVideoTest(parcel)
+    companion object CREATOR : Parcelable.Creator<Answer> {
+        override fun createFromParcel(parcel: Parcel): Answer {
+            return Answer(parcel)
         }
 
-        override fun newArray(size: Int): Array<ReadingVideoTest?> {
+        override fun newArray(size: Int): Array<Answer?> {
             return arrayOfNulls(size)
         }
     }

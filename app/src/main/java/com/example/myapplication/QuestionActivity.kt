@@ -3,14 +3,14 @@ package com.example.myapplication
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
-import com.example.myapplication.apiclient.model.QuestionBackup
-import com.example.myapplication.apiclient.model.ReadingWithTestBackup
 import kotlinx.android.synthetic.main.activity_question.*
 import android.app.AlertDialog
 import android.content.Intent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
+import com.example.myapplication.apiclient.model.Question
+import com.example.myapplication.apiclient.model.ReadingVideoTest
 
 
 class QuestionActivity : AppCompatActivity() {
@@ -19,15 +19,15 @@ class QuestionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question)
 
-        val readingWithTest = intent.extras!!.getParcelable<ReadingWithTestBackup>("readingWithTest")
-        val questions = readingWithTest!!.questionBackups
+        val readingVideoTest = intent.extras!!.getParcelable<ReadingVideoTest>("readingVideoTest")
+        val questions = readingVideoTest!!.questions
 
         val questionsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList<String>())
         listView.adapter = questionsAdapter
 
         var selectedItem = -1
         var currentQuestionCounter = 0
-        val userAnswers = arrayOfNulls<Int>(questions.size)
+        val userAnswers = arrayOfNulls<Int>(questions!!.size)
 
         textView.text = questions[currentQuestionCounter].text
         loadQuestion(questions, currentQuestionCounter, questionsAdapter, userAnswers)
@@ -64,7 +64,7 @@ class QuestionActivity : AppCompatActivity() {
 
             val intent = Intent(this, ReadingWithTestActivity::class.java)
             intent.putExtra("lookup",true)
-            intent.putExtra("readingWithTest",readingWithTest)
+            intent.putExtra("readingVideoTest",readingVideoTest)
             startActivity(intent)
             if (lastSelected != -1) {
                 selectedItem = lastSelected
@@ -95,34 +95,36 @@ class QuestionActivity : AppCompatActivity() {
         }
     }
 
-    private fun calculateScore(questionBackups: Array<QuestionBackup>, userAnswers: Array<Int?>): Int {
+    private fun calculateScore(questions: List<Question>?, userAnswers: Array<Int?>): Int {
         var score = 0
-        for (i in questionBackups.indices) {
-            if (userAnswers[i] == questionBackups[i].correctAnswer)
-                score++
+        for (i in questions!!.indices) {
+            val selectedAnswer = userAnswers[i]
+            if (selectedAnswer != null && selectedAnswer != -1)
+                if (questions[i].answers!![selectedAnswer].correct!!)
+                    score++
         }
         return score
     }
 
     private fun loadQuestion(
-        questionBackups: Array<QuestionBackup>,
+        questionBackups: List<Question>?,
         currentQuestionCounter: Int,
         mAdapter: ArrayAdapter<String>,
         userAnswers: Array<Int?>
     ): Int {
-        progressBar.progress = (currentQuestionCounter) * 100 / (questionBackups.size)
+        progressBar.progress = (currentQuestionCounter) * 100 / (questionBackups!!.size)
         textView.text = questionBackups[currentQuestionCounter].text
 
         mAdapter.clear()
         val question = questionBackups[currentQuestionCounter]
-        for (answer in question.answers) mAdapter.add(answer)
+        for (answer in question.answers!!) mAdapter.add(answer.text)
 
         listView.clearChoices()
         listView.adapter = mAdapter
 
         var currentSel = -1;
 
-        if (userAnswers[currentQuestionCounter] != null) {
+        if (userAnswers[currentQuestionCounter] != null && userAnswers[currentQuestionCounter] != -1) {
             val position = userAnswers[currentQuestionCounter]!!
             performClick(listView, position)
             currentSel = position
