@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -10,19 +11,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import com.example.myapplication.R.id.LayoutParent
 import com.nex3z.flowlayout.FlowLayout
+import kotlinx.android.synthetic.main.activity_sentence.*
 import java.util.*
+
+
 
 class SentenceActivity : AppCompatActivity() {
 
     private var pressCounter = 0
     private val maxPressCounter = 5
     private var keys = arrayOf("oranges ", "Kamil ", "much", "very ", "likes ")
+
     private val answer = "Kamil likes oranges very much"
     private lateinit var sentencesActivityHeader: TextView
-    private lateinit var sentenceActivityQuestion: TextView
     private lateinit var yourWords: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +36,10 @@ class SentenceActivity : AppCompatActivity() {
 
         for (key in keys) {
             addView(
-                findViewById(LayoutParent), key,
+                LayoutParent, key,
                 findViewById(R.id.EditText)
             )
+
         }
     }
 
@@ -69,7 +74,7 @@ class SentenceActivity : AppCompatActivity() {
         textView.textSize = 24f
 
         sentencesActivityHeader = findViewById(R.id.sentencesActivityHeader)
-        sentenceActivityQuestion = findViewById(R.id.sentenceActivityQuestion)
+
         yourWords = findViewById(R.id.yourWords)
 
         textView.setOnClickListener {
@@ -146,12 +151,14 @@ class SentenceActivity : AppCompatActivity() {
     private fun doValidate() {
         pressCounter = 0
         val editText = findViewById<EditText>(R.id.EditText)
-        val flowLayout = findViewById<FlowLayout>(LayoutParent)
+        val flowLayout = layoutSecond
+
 
         if (editText.text.toString() == answer) {
             editText.setText("")
             val toast = Toast.makeText(this, "Dobrze!", 1000)
             toast.show()
+            moveSentence.visibility = View.VISIBLE
         } else {
             editText.setText("")
             val toast = Toast.makeText(this, "Żle!", 1000)

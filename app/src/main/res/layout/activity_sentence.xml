@@ -20,7 +20,8 @@
         android:background="@drawable/border"
         android:layout_margin="16dp"/>
 
-    <LinearLayout
+    <com.nex3z.flowlayout.FlowLayout
+        android:id="@+id/layoutSecond"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_width="wrap_content"
@@ -50,7 +51,7 @@
 
 
 
-    </LinearLayout>
+    </com.nex3z.flowlayout.FlowLayout>
 
 
 
@@ -98,6 +99,17 @@
         >
 
     </com.nex3z.flowlayout.FlowLayout>
+
+    <Button
+        android:id="@+id/moveSentence"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="@string/Sentence_Activity_Move"
+        android:visibility="invisible"
+        />
 
 </LinearLayout>
 

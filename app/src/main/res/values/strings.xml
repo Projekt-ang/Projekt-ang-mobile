@@ -8,6 +8,7 @@
     <string name="Sentence_Application_Header">Dopasuj odpowiednio słowa by utworzyć zdanie!</string>
     <string name="Sentence_Activity_Question">Kamil bardzo lubi pomarańcze</string>
     <string name="Sentences_Activity_Your_words">Twoje słowa:</string>
+    <string name="Sentence_Activity_Move">Przejdź dalej</string>
 
     // flashcards activity
     <string name="start_msg">Tak Tak</string>
