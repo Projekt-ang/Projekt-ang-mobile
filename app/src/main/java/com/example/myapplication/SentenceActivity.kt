@@ -37,7 +37,7 @@ class SentenceActivity : AppCompatActivity() {
         for (key in keys) {
             addView(
                 LayoutParent, key,
-                findViewById(R.id.EditText)
+                findViewById(R.id.editText)
             )
 
         }
@@ -150,7 +150,7 @@ class SentenceActivity : AppCompatActivity() {
     @SuppressLint("WrongConstant")
     private fun doValidate() {
         pressCounter = 0
-        val editText = findViewById<EditText>(R.id.EditText)
+        val editText = findViewById<EditText>(R.id.editText)
         val flowLayout = layoutSecond
 
 
