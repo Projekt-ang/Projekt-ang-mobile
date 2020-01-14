@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_exercise_selection.*
 import android.content.Intent
+import android.graphics.Color
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import kotlin.random.Random
+
 
 
 
@@ -72,7 +74,11 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         SentencesExerciseButton.setOnClickListener {
-
+            //Creating buttons for Task Selection List
+//            buttonReadingTestExercise.setBackgroundColor(Color.GRAY)
+//            val buttonAmount = 6
+//            var buttonNames = Array(buttonAmount) { i -> "Test Reading Quiz no. $i" }
+//            this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
         }
 
 
@@ -103,10 +109,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             }
         }
 
-        //Creating buttons for Task Selection List
-//        val buttonAmount = 15
-//        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
-//        this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
+
 
 
     }

@@ -12,7 +12,7 @@ class FalshcardsActivity : AppCompatActivity() {
 
 
         FlashcardsButtonMain.setOnClickListener(){
-            if (FlashcardsButtonMain.text == "Rhino") FlashcardsButtonMain.text = "Nosorożec"
+            if (FlashcardsButtonMain.text == "Rhino") FlashcardsButtonMain.text = "African animal with a horn on it's nose. It's big, grey and dangerous."
             else FlashcardsButtonMain.text = "Rhino"
         }
     }
