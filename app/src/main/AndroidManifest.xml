@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".FalshcardsActivity"></activity>
+        <activity android:name=".ChooseSentenceActivity"></activity>
+        <activity android:name=".SentenceActivity" />
+        <activity android:name=".FalshcardsActivity" />
         <activity android:name=".ResultActivity" />
         <activity android:name=".QuestionActivity" />
         <activity android:name=".ReadingWithTestActivity" />

@@ -1,15 +1,15 @@
 package com.example.myapplication
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_exercise_selection.*
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.android.synthetic.main.activity_exercise_selection.*
 import kotlin.random.Random
 
 
@@ -72,7 +72,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         SentencesExerciseButton.setOnClickListener {
+            val intent = Intent(this, SentenceActivity::class.java)
+            this.startActivity(intent)
+        }
 
+        SentencesExerciseButtonTest.setOnClickListener {
+            val intent = Intent(this, ChooseSentenceActivity::class.java)
+            this.startActivity(intent)
         }
 
 

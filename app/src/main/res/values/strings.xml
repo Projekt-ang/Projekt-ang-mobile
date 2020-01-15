@@ -7,4 +7,10 @@
     <string name="next">Next</string>
     <string name="finish">Finish</string>
     <string name="results">Results</string>
+
+    <!-- SentenceActivity -->
+    <string name="sentenceAppName">Dopasuj odpowiednio słowa by utworzyć zdanie!</string>
+    <string name="Sentence_Activity_Question">Kamil bardzo lubi pomarańcze</string>
+    <string name="Sentences_Activity_Your_words">Twoje słowa:</string>
+    <string name="Sentence_Activity_Move">Przejdź dalej</string>
 </resources>
