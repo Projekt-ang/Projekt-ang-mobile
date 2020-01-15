@@ -11,14 +11,19 @@ class ReadingVideoTest() : Parcelable {
     @SerializedName("questions")
     var questions: List<Question>? = null
 
+    @SerializedName("id")
+    var id: Int = 0
+
     constructor(parcel: Parcel) : this() {
         text = parcel.readString()
         questions = parcel.createTypedArrayList(Question)
+        id = parcel.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(text)
         parcel.writeTypedList(questions)
+        parcel.writeInt(id)
     }
 
     override fun describeContents(): Int {

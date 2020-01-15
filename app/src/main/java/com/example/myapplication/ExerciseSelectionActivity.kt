@@ -144,26 +144,35 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             var sentences : List<Sentence>? = null
             var buttonNames : Array<String> = emptyArray()
 
-
+            println("downloading Sentences pages")
             //GET FIRST PAGE OF RESULTS
-            val call: Call<List<Sentence>> = Services.EXERCISE_SERVICE.getPageSentences(0)
+            val call: Call<List<Sentence>> = Services.EXERCISE_SERVICE.getPageSentences()
             call.enqueue(object : Callback<List<Sentence>> {
                 override fun onResponse(call: Call<List<Sentence>>, response: Response<List<Sentence>>) {
                     if (response.code() == 200) {
+                        println("Response body: " + response.body().toString())
                         sentences = response.body()!!
+                    }
+                    else {
+                        println("Response body: " + response.body().toString())
                     }
                 }
                 override fun onFailure(call: Call<List<Sentence>>, t: Throwable) {
                     println("-- Network error occurred")
                 }
             })
+            println("Finished downloading Sentences pages")
 
             //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
             this.removeButtons(LinearLayoutTaskSelection)
-            for (i in sentences!!.indices) {
-                buttonNames += sentences!![i].polishSentence!!
+            println("Deleted buttons")
+            for (i in sentences!!.indices!!) {
+                println("Adding buttonName no. " + i.toString())
+                buttonNames = buttonNames.plusElement(sentences!![i].polishSentence!!)
             }
+            println("created buttonNames array")
             this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
+            println("created buttons")
             for (i in this.buttonsArray.indices){
                 this.buttonsArray[i].setOnClickListener(){
 
@@ -185,7 +194,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 }
             }
             LinearLayoutTaskSelection.visibility = View.VISIBLE
-
+            println("Successfully created buttons")
 
 
         }
@@ -200,15 +209,11 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             this.switchVisibility(LinearLayoutExerciseSearch, View.GONE)
         }
         FlashcardsExerciseButton.setOnClickListener {
-            val intent = Intent(this, FalshcardsActivity::class.java)
-            this.startActivity(intent)
-        }
-
-
-        buttonDemoExample.setOnClickListener {
             val intent = Intent(this, ReadingWithTestActivity::class.java)
             this.startActivity(intent)
         }
+
+
 
         exerciseSearchButton.setOnClickListener {
             if (exerciseSearchText.text.toString() == "Search For Exercises by title..." || exerciseSearchText.text.toString() == this.previousSearch) Toast.makeText(applicationContext, "Write a search phrase first!", Toast.LENGTH_SHORT).show()
@@ -223,6 +228,65 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             }
         }
 
+        buttonDemoExample.setOnClickListener {
+            val demo_readingVideoTest_id : Int = 255
+            var readingVideoTest : ReadingVideoTest? = null
+            var readingVideoTests : List<ReadingVideoTest>? = null
+            var buttonNames : Array<String> = emptyArray()
+
+            println("downloading ReadingVideoTests pages")
+            //GET FIRST PAGE OF RESULTS
+            val call: Call<List<ReadingVideoTest>> = Services.READING_VIDEO_TEST_SERVICE.getAll()
+            call.enqueue(object : Callback<List<ReadingVideoTest>> {
+                override fun onResponse(call: Call<List<ReadingVideoTest>>, response: Response<List<ReadingVideoTest>>) {
+                    if (response.code() == 200) {
+                        println("Response body: " + response.body().toString())
+                        readingVideoTests = response.body()!!
+                    }
+                    else {
+                        println("Response body: " + response.body().toString())
+                    }
+                }
+                override fun onFailure(call: Call<List<ReadingVideoTest>>, t: Throwable) {
+                    println("-- Network error occurred")
+                }
+            })
+            println("Finished downloading ReadingVideoTests this many ->" + readingVideoTests?.size.toString() + " <- pages.")
+
+            //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
+            this.removeButtons(LinearLayoutTaskSelection)
+            println("Deleted buttons")
+            for (i in readingVideoTests!!.indices!!) {
+                println("Adding buttonName no. " + i.toString())
+                buttonNames = buttonNames.plusElement(readingVideoTests!![i].text!!)
+            }
+            println("created buttonNames array")
+            this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
+            println("created buttons")
+            for (i in this.buttonsArray.indices){
+                this.buttonsArray[i].setOnClickListener(){
+
+                    if (this.role == "demo") {
+                        readingVideoTest = getReadingVideoTest(demo_readingVideoTest_id)
+
+                        //START ACTIVITY
+                        val intent = Intent(this, ReadingWithTestActivity::class.java)
+                        intent.putExtra("ReadingVideoTest", readingVideoTest)
+                        this.startActivity(intent)
+                    }
+
+                    else {
+                        readingVideoTest = getReadingVideoTest(readingVideoTests!![i].id)
+                        val intent = Intent(this, ReadingWithTestActivity::class.java)
+                        intent.putExtra("ReadingVideoTest", readingVideoTest)
+                        this.startActivity(intent)
+                    }
+                }
+            }
+            LinearLayoutTaskSelection.visibility = View.VISIBLE
+            println("Successfully created buttons")
+
+        }
         //Creating buttons for Task Selection List
 //        val buttonAmount = 15
 //        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
