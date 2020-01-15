@@ -44,7 +44,7 @@ class FalshcardsActivity : AppCompatActivity() {
                     }
                 }
                 override fun onFailure(call: Call<Glossarie>, t: Throwable) {
-                    println("-- Network error occured")
+                    println("-- Network error occured, code: " + t.toString())
                 }
             })
         }
