@@ -209,7 +209,15 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             this.switchVisibility(LinearLayoutExerciseSearch, View.GONE)
         }
         FlashcardsExerciseButton.setOnClickListener {
-            val intent = Intent(this, ReadingWithTestActivity::class.java)
+            var glossary : Glossarie? = Glossarie()
+            if (glossary != null) {
+                glossary.word = "Jeż"
+            }
+            if (glossary != null) {
+                glossary.definition = "Zwierze"
+            }
+            val intent = Intent(this, FalshcardsActivity::class.java)
+            intent.putExtra("glossarie", glossary)
             this.startActivity(intent)
         }
 
