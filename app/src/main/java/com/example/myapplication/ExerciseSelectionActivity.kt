@@ -9,7 +9,14 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.example.myapplication.apiclient.model.Glossarie
+import com.example.myapplication.apiclient.model.ReadingVideoTest
+import com.example.myapplication.apiclient.model.Sentence
+import com.example.myapplication.apiclient.service.Services
 import kotlinx.android.synthetic.main.activity_exercise_selection.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.random.Random
 
 
@@ -21,7 +28,58 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
     private var buttonsArray: Array<Button> = arrayOf()
 
+    private var role: String? = "demo"
 
+
+    private fun getSentence(id : Int) : Sentence?{
+        var sentence : Sentence? = null
+        val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(id)
+        call.enqueue(object : Callback<Sentence> {
+            override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
+                if (response.code() == 200) {
+                    sentence = response.body()!!
+                }
+            }
+            override fun onFailure(call: Call<Sentence>, t: Throwable) {
+                println("-- Network error occured")
+            }
+        })
+        return sentence
+    }
+
+    private fun getReadingVideoTest(id : Int) : ReadingVideoTest?{
+        var readingVideoTest : ReadingVideoTest? = null
+        val call: Call<ReadingVideoTest> = Services.EXERCISE_SERVICE.getReadingVideoTest(id)
+        call.enqueue(object : Callback<ReadingVideoTest> {
+            override fun onResponse(call: Call<ReadingVideoTest>, response: Response<ReadingVideoTest>) {
+                if (response.code() == 200) {
+                    readingVideoTest = response.body()!!
+                }
+            }
+            override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
+                println("-- Network error occured")
+            }
+        })
+        return readingVideoTest
+    }
+
+    private fun getGlossarie(id : Int) : Glossarie?{
+        var glossarie : Glossarie? = null
+        val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(id)
+        call.enqueue(object : Callback<Glossarie> {
+            override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
+                if (response.code() == 200) {
+                    glossarie = response.body()!!
+                }
+            }
+            override fun onFailure(call: Call<Glossarie>, t: Throwable) {
+                println("-- Network error occured")
+            }
+        })
+        return glossarie
+    }
+    
+    
     private fun removeButtons(layout: LinearLayout){
         for (button in this.buttonsArray){
             layout.removeView(button)
@@ -65,6 +123,15 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_exercise_selection)
 
 
+
+        if (intent.hasExtra("Role")) {
+            this.role = intent.extras!!.getString("Role")!!
+
+        } else{
+            this.role = "demo"
+        }
+
+
         buttonReadingTestExercise.setOnClickListener {
             this.removeButtons(LinearLayoutTaskSelection)
             buttonDemoExample.visibility = View.VISIBLE
@@ -72,8 +139,55 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         SentencesExerciseButton.setOnClickListener {
-            val intent = Intent(this, SentenceActivity::class.java)
-            this.startActivity(intent)
+            val demo_sentence_id : Int = 255
+            var sentence : Sentence? = null
+            var sentences : List<Sentence>? = null
+            var buttonNames : Array<String> = emptyArray()
+
+
+            //GET FIRST PAGE OF RESULTS
+            val call: Call<List<Sentence>> = Services.EXERCISE_SERVICE.getPageSentences(0)
+            call.enqueue(object : Callback<List<Sentence>> {
+                override fun onResponse(call: Call<List<Sentence>>, response: Response<List<Sentence>>) {
+                    if (response.code() == 200) {
+                        sentences = response.body()!!
+                    }
+                }
+                override fun onFailure(call: Call<List<Sentence>>, t: Throwable) {
+                    println("-- Network error occurred")
+                }
+            })
+
+            //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
+            this.removeButtons(LinearLayoutTaskSelection)
+            for (i in sentences!!.indices) {
+                buttonNames += sentences!![i].polishSentence!!
+            }
+            this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
+            for (i in this.buttonsArray.indices){
+                this.buttonsArray[i].setOnClickListener(){
+
+                    if (this.role == "demo") {
+                        sentence = getSentence(demo_sentence_id)
+
+                    //START ACTIVITY
+                    val intent = Intent(this, SentenceActivity::class.java)
+                    intent.putExtra("Sentence", sentence)
+                    this.startActivity(intent)
+                    }
+
+                    else {
+                            sentence = getSentence(sentences!![i].id)
+                        val intent = Intent(this, SentenceActivity::class.java)
+                        intent.putExtra("Sentence", sentence)
+                        this.startActivity(intent)
+                    }
+                }
+            }
+            LinearLayoutTaskSelection.visibility = View.VISIBLE
+
+
+
         }
 
         SentencesExerciseButtonTest.setOnClickListener {

@@ -11,5 +11,6 @@ class Services {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val READING_VIDEO_TEST_SERVICE = retrofit.create(ReadingVideoTestService::class.java)
+        val EXERCISE_SERVICE = retrofit.create(ExerciseService::class.java)
     }
 }

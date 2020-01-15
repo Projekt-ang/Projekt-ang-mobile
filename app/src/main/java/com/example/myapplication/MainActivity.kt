@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
 
         demoButton.setOnClickListener {
             val intent = Intent(this, ExerciseSelectionActivity::class.java)
+            intent.putExtra("Role", "demo")
             startActivityForResult(intent, ADD_TASK_REQUEST)
         }
     }
