@@ -62,17 +62,6 @@
                     android:textSize="18sp" />
 
                 <Button
-                    android:id="@+id/SentencesExerciseButtonTest"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="SentencesTest"
-                    android:textSize="18sp" />
-
-                <Button
                     android:id="@+id/FlashcardsExerciseButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
