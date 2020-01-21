@@ -33,7 +33,7 @@ class ReadingWithTestActivity : AppCompatActivity() {
                     }
                 }
                 override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
-                    println("-- Network error occured")
+                    println("-- Network error occured" + t.message)
                 }
             })
         }

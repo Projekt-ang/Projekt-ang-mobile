@@ -101,7 +101,7 @@ class SentenceActivity : AppCompatActivity() {
     }
 
     /*
-    private fun reverseView(viewParent: FlowLayout, text: String) {
+    private fun reverseView(viewParent: FlowLayout, questions: String) {
         val flowLayoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -115,7 +115,7 @@ class SentenceActivity : AppCompatActivity() {
         ContextCompat.getColor(this, R.color.colorGray)
         textView.gravity = Gravity.NO_GRAVITY
         textView.setPadding(36,16,36,16)
-        textView.text = text
+        textView.questions = questions
         textView.isClickable = true
         textView.isFocusable = true
         textView.textSize = 24f

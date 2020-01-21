@@ -9,9 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.myapplication.apiclient.model.Glossarie
-import com.example.myapplication.apiclient.model.ReadingVideoTest
-import com.example.myapplication.apiclient.model.Sentence
+import com.example.myapplication.apiclient.model.*
 import com.example.myapplication.apiclient.service.Services
 import kotlinx.android.synthetic.main.activity_exercise_selection.*
 import retrofit2.Call
@@ -51,7 +49,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
     private fun getReadingVideoTest(id : Int) : ReadingVideoTest?{
         var readingVideoTest : ReadingVideoTest? = null
-        val call: Call<ReadingVideoTest> = Services.EXERCISE_SERVICE.getReadingVideoTest(id)
+        val call: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(id)
         call.enqueue(object : Callback<ReadingVideoTest> {
             override fun onResponse(call: Call<ReadingVideoTest>, response: Response<ReadingVideoTest>) {
                 if (response.code() == 200) {
@@ -157,7 +155,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         var btArr : Array<Button>
                         thisContext.removeButtons(LinearLayoutTaskSelection)
                         println("Deleted buttons")
-                        for (i in sentences!!.indices!!) {
+                        for (i in sentences!!.indices) {
                             println("Adding buttonName no. $i")
                             buttonNames = buttonNames.plusElement(sentences!![i].polishSentence!!)
                         }
@@ -234,25 +232,39 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         buttonDemoExample.setOnClickListener {
-            val demo_readingVideoTest_id : Int = 255
-            var readingVideoTest : ReadingVideoTest? = null
-            var readingVideoTests : List<ReadingVideoTest>? = null
+            val demo_readingVideoTest_id : Int = 53
+            var readingVideoTest: ReadingVideoTest?
+            var readingVideoTests : Array<ReadingVideoTest>? = null
             var buttonNames : Array<String> = emptyArray()
 
             println("downloading ReadingVideoTests pages")
+
+            /*val calle: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(53)
+            calle.enqueue(object : Callback<ReadingVideoTest> {
+                override fun onResponse(call: Call<ReadingVideoTest>, response: Response<ReadingVideoTest>) {
+                    if (response.code() == 200) {
+                        val test = response.body()!!
+                        val t = ""
+                    }
+                }
+                override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
+                    println("-- Network error occured")
+                }
+            })*/
             //GET FIRST PAGE OF RESULTS
-            val call: Call<List<ReadingVideoTest>> = Services.READING_VIDEO_TEST_SERVICE.getAll()
-            call.enqueue(object : Callback<List<ReadingVideoTest>> {
-                override fun onResponse(call: Call<List<ReadingVideoTest>>, response: Response<List<ReadingVideoTest>>) {
+            val call: Call<ReadingVideoTestAllResponseEmbedded> = Services.READING_VIDEO_TEST_SERVICE.getAll()
+            call.enqueue(object : Callback<ReadingVideoTestAllResponseEmbedded> {
+                override fun onResponse(call: Call<ReadingVideoTestAllResponseEmbedded>, response: Response<ReadingVideoTestAllResponseEmbedded>) {
                     if (response.code() == 200) {
                         println("Response body: " + response.body().toString())
-                        readingVideoTests = response.body()!!
+                        readingVideoTests = response.body()!!.embedded!!.embedded
                         //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
                         thisContext.removeButtons(LinearLayoutTaskSelection)
+
                         println("Deleted buttons")
-                        for (i in readingVideoTests!!.indices!!) {
+                        for (i in readingVideoTests!!.indices) {
                             println("Adding buttonName no. " + i.toString())
-                            buttonNames = buttonNames.plusElement(readingVideoTests!![i].text!!)
+                            buttonNames = buttonNames.plusElement(readingVideoTests!![i].name!!)
                         }
                         println("created buttonNames array")
                         thisContext.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
@@ -284,7 +296,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         println("Response body: " + response.body().toString())
                     }
                 }
-                override fun onFailure(call: Call<List<ReadingVideoTest>>, t: Throwable) {
+                override fun onFailure(call: Call<ReadingVideoTestAllResponseEmbedded>, t: Throwable) {
                     println("-- Network error occurred" + t.toString())
                 }
             })

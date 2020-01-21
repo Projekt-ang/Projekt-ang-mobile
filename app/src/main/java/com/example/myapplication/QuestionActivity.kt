@@ -9,8 +9,11 @@ import android.content.Intent
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ListView
-import com.example.myapplication.apiclient.model.Question
-import com.example.myapplication.apiclient.model.ReadingVideoTest
+import com.example.myapplication.apiclient.model.*
+import com.example.myapplication.apiclient.service.Services
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class QuestionActivity : AppCompatActivity() {
@@ -20,14 +23,47 @@ class QuestionActivity : AppCompatActivity() {
         setContentView(R.layout.activity_question)
 
         val readingVideoTest = intent.extras!!.getParcelable<ReadingVideoTest>("readingVideoTest")
-        val questions = readingVideoTest!!.questions
 
+        var questions : Array<Question>
+        val call: Call<QuestionsResponseEmbedded> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTestQuestions(
+            readingVideoTest!!.id)
+        call.enqueue(object : Callback<QuestionsResponseEmbedded> {
+            override fun onResponse(call: Call<QuestionsResponseEmbedded>, response: Response<QuestionsResponseEmbedded>) {
+                if (response.code() == 200) {
+                    questions = response.body()!!.embedded!!.questions!!
+                    dynamicQuestions(readingVideoTest, questions)
+                }
+            }
+            override fun onFailure(call: Call<QuestionsResponseEmbedded>, t: Throwable) {
+                println("-- Network error occured" + t.message)
+            }
+        })
+    }
+
+    private fun dynamicQuestions(readingVideoTest: ReadingVideoTest, questions: Array<Question>) {
         val questionsAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList<String>())
         listView.adapter = questionsAdapter
 
         var selectedItem = -1
         var currentQuestionCounter = 0
-        val userAnswers = arrayOfNulls<Int>(questions!!.size)
+        var answers: ArrayList<Answers> = ArrayList<Answers>()
+        val userAnswers = arrayOfNulls<Int>(questions.size)
+
+        for (q in questions) {
+            val id = q.id
+            val callAnswers: Call<AnswersResponseEmbedded> = Services.QUESTION_SERVICE.getAnswers(id)
+            callAnswers.enqueue(object : Callback<AnswersResponseEmbedded> {
+                override fun onResponse(call: Call<AnswersResponseEmbedded>, response: Response<AnswersResponseEmbedded>) {
+                    if (response.code() == 200) {
+                        val answer = response.body()!!.embedded!!
+                        answers.add(answer)
+                    }
+                }
+                override fun onFailure(call: Call<AnswersResponseEmbedded>, t: Throwable) {
+                    println("-- Network error occured" + t.message)
+                }
+            })
+        }
 
         textView.text = questions[currentQuestionCounter].text
         loadQuestion(questions, currentQuestionCounter, questionsAdapter, userAnswers)
@@ -77,10 +113,10 @@ class QuestionActivity : AppCompatActivity() {
                 AlertDialog.Builder(this)
                     .setTitle("Are you sure?")
                     .setPositiveButton(getString(R.string.yes)) { arg0, arg1 ->
-                        val correctAnswers = calculateScore(questions, userAnswers)
+                        val correctAnswers = calculateScore(answers, userAnswers)
                         val intent = Intent(this, ResultActivity::class.java)
                         intent.putExtra("correctAnswers", correctAnswers)
-                        intent.putExtra("questionBackups", questions.size)
+                        intent.putExtra("questionsSize", questions.size)
                         startActivity(intent)
                         finish()
                     }
@@ -95,29 +131,45 @@ class QuestionActivity : AppCompatActivity() {
         }
     }
 
-    private fun calculateScore(questions: List<Question>?, userAnswers: Array<Int?>): Int {
+    private fun calculateScore(questions: ArrayList<Answers>, userAnswers: Array<Int?>): Int {
         var score = 0
-        for (i in questions!!.indices) {
+        for (i in questions.indices) {
             val selectedAnswer = userAnswers[i]
             if (selectedAnswer != null && selectedAnswer != -1)
                 if (questions[i].answers!![selectedAnswer].correct!!)
-                    score++
+                  score++
         }
+
         return score
     }
 
     private fun loadQuestion(
-        questionBackups: List<Question>?,
+        questions: Array<Question>?,
         currentQuestionCounter: Int,
         mAdapter: ArrayAdapter<String>,
         userAnswers: Array<Int?>
     ): Int {
-        progressBar.progress = (currentQuestionCounter) * 100 / (questionBackups!!.size)
-        textView.text = questionBackups[currentQuestionCounter].text
+        progressBar.progress = (currentQuestionCounter) * 100 / (questions!!.size)
+        textView.text = questions[currentQuestionCounter].text
 
         mAdapter.clear()
-        val question = questionBackups[currentQuestionCounter]
-        for (answer in question.answers!!) mAdapter.add(answer.text)
+        val question = questions[currentQuestionCounter]
+        //for (answer in question.answers!!) mAdapter.add(answer.text)
+
+        val call: Call<AnswersResponseEmbedded> = Services.QUESTION_SERVICE.getAnswers(questions[currentQuestionCounter].id)
+        call.enqueue(object : Callback<AnswersResponseEmbedded> {
+            override fun onResponse(call: Call<AnswersResponseEmbedded>, response: Response<AnswersResponseEmbedded>) {
+                if (response.code() == 200) {
+                    val answers = response.body()!!.embedded!!.answers!!
+                    answers.forEach { a ->
+                        mAdapter.add(a.text)
+                    }
+                }
+            }
+            override fun onFailure(call: Call<AnswersResponseEmbedded>, t: Throwable) {
+                println("-- Network error occured" + t.message)
+            }
+        })
 
         listView.clearChoices()
         listView.adapter = mAdapter
@@ -126,13 +178,13 @@ class QuestionActivity : AppCompatActivity() {
 
         if (userAnswers[currentQuestionCounter] != null && userAnswers[currentQuestionCounter] != -1) {
             val position = userAnswers[currentQuestionCounter]!!
-            performClick(listView, position)
+            //performClick(listView, position)
             currentSel = position
         }
         if (buttonNext.text == getString(R.string.finish)) {
             buttonNext.text = getString(R.string.next)
         }
-        if (currentQuestionCounter >= questionBackups.size - 1) {
+        if (currentQuestionCounter >= questions.size - 1) {
             buttonNext.text = getString(R.string.finish)
         }
         return currentSel

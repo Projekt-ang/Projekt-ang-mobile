@@ -11,7 +11,7 @@ class ResultActivity : AppCompatActivity() {
         setContentView(R.layout.activity_result)
 
         val correctAnswers = intent.getIntExtra("correctAnswers", 1)
-        val questionsSize = intent.getIntExtra("questionBackups", 1)
+        val questionsSize = intent.getIntExtra("questionsSize", 1)
 
         progressBar2.progress = correctAnswers * 100 / questionsSize
         if (correctAnswers == 1)

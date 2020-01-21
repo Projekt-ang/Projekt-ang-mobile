@@ -4,26 +4,34 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
+class ReadingVideoTestAllResponseEmbedded() {
+    @SerializedName("_embedded")
+    var embedded: ReadingVideoTestAllResponse? = null
+}
+
+class ReadingVideoTestAllResponse() {
+    @SerializedName("readingVideoTests")
+    var embedded: Array<ReadingVideoTest>? = null
+}
+
 class ReadingVideoTest() : Parcelable {
-    @SerializedName("text")
-    var text: String? = null
-
-    @SerializedName("questions")
-    var questions: List<Question>? = null
-
     @SerializedName("id")
     var id: Int = 0
 
+    @SerializedName("text")
+    var text: String? = null
+
+    @SerializedName("name")
+    var name: String? = null
+
     constructor(parcel: Parcel) : this() {
-        text = parcel.readString()
-        questions = parcel.createTypedArrayList(Question)
         id = parcel.readInt()
+        text = parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(text)
-        parcel.writeTypedList(questions)
         parcel.writeInt(id)
+        parcel.writeString(text)
     }
 
     override fun describeContents(): Int {
