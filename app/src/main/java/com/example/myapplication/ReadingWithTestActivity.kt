@@ -24,7 +24,7 @@ class ReadingWithTestActivity : AppCompatActivity() {
             buttonQuestion.isEnabled = true
         } else {
             val call: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(
-                readingVideoTest!!.id)
+                53)
             call.enqueue(object : Callback<ReadingVideoTest> {
                 override fun onResponse(call: Call<ReadingVideoTest>, response: Response<ReadingVideoTest>) {
                     if (response.code() == 200) {

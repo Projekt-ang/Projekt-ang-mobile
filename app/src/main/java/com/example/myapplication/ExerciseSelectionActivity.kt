@@ -147,7 +147,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
         buttonReadingTestExercise.setOnClickListener {
             //DEMO BEHAVIOUR
-//DEMO BEHAVIOUR
             if (this.role == "demo") {
                 if (this.openTab != "readingVideoTest") {
                     //remove buttons and create new ones
@@ -171,6 +170,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         }
                     }
                     this.openTab = "readingVideoTest"
+                    buttonDemoExample.visibility=View.VISIBLE
                 } else {
                     LinearLayoutTaskSelection.visibility = View.INVISIBLE
                     this.openTab = "none"
@@ -348,18 +348,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
             println("downloading ReadingVideoTests pages")
 
-            /*val calle: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(53)
-            calle.enqueue(object : Callback<ReadingVideoTest> {
-                override fun onResponse(call: Call<ReadingVideoTest>, response: Response<ReadingVideoTest>) {
-                    if (response.code() == 200) {
-                        val test = response.body()!!
-                        val t = ""
-                    }
-                }
-                override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
-                    println("-- Network error occured")
-                }
-            })*/
             //GET FIRST PAGE OF RESULTS
             val call: Call<ReadingVideoTestAllResponseEmbedded> =
                 Services.READING_VIDEO_TEST_SERVICE.getAll()
@@ -390,19 +378,35 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                             thisContext.buttonsArray[i].setOnClickListener() {
 
                                 if (thisContext.role == "demo") {
-                                    readingVideoTest = getReadingVideoTest(demo_readingVideoTest_id)
+                                    val call: Call<ReadingVideoTest> =
+                                        Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(demo_readingVideoTest_id)
+                                    call.enqueue(object : Callback<ReadingVideoTest> {
+                                        override fun onResponse(
+                                            call: Call<ReadingVideoTest>,
+                                            response: Response<ReadingVideoTest>
+                                        ) {
+                                            if (response.code() == 200) {
+                                                readingVideoTest = response.body()!!
+                                                //START ACTIVITY
+                                                val intent =
+                                                    Intent(thisContext, ReadingWithTestActivity::class.java)
+                                                intent.putExtra("readingVideoTest", readingVideoTest)
+                                                thisContext.startActivity(intent)
+                                            }
+                                        }
 
-                                    //START ACTIVITY
-                                    val intent =
-                                        Intent(thisContext, ReadingWithTestActivity::class.java)
-                                    intent.putExtra("ReadingVideoTest", readingVideoTest)
-                                    thisContext.startActivity(intent)
+                                        override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
+                                            println("-- Network error occured")
+                                        }
+                                    })
+
+
                                 } else {
                                     readingVideoTest =
                                         getReadingVideoTest(readingVideoTests!![i].id)
                                     val intent =
                                         Intent(thisContext, ReadingWithTestActivity::class.java)
-                                    intent.putExtra("ReadingVideoTest", readingVideoTest)
+                                    intent.putExtra("readingVideoTest", readingVideoTest)
                                     thisContext.startActivity(intent)
                                 }
                             }
