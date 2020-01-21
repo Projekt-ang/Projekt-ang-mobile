@@ -172,14 +172,101 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     this.openTab = "readingVideoTest"
                     buttonDemoExample.visibility=View.VISIBLE
                 } else {
-                    LinearLayoutTaskSelection.visibility = View.INVISIBLE
-                    this.openTab = "none"
-                }
+                    val demo_readingVideoTest_id: Int = 53
+                    var readingVideoTest: ReadingVideoTest?
+                    var readingVideoTests: Array<ReadingVideoTest>? = null
+                    var buttonNames: Array<String> = emptyArray()
 
-            } else {
-                this.removeButtons(LinearLayoutTaskSelection)
-                buttonDemoExample.visibility = View.VISIBLE
-                this.switchVisibility(LinearLayoutTaskSelection, View.GONE)
+                    println("downloading ReadingVideoTests pages")
+
+                    /*val calle: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(53)
+                calle.enqueue(object : Callback<ReadingVideoTest> {
+                    override fun onResponse(call: Call<ReadingVideoTest>, response: Response<ReadingVideoTest>) {
+                        if (response.code() == 200) {
+                            val test = response.body()!!
+                            val t = ""
+                        }
+                    }
+                    override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
+                        println("-- Network error occured")
+                    }
+                })*/
+                    //GET FIRST PAGE OF RESULTS
+                    val call: Call<ReadingVideoTestAllResponseEmbedded> =
+                        Services.READING_VIDEO_TEST_SERVICE.getAll()
+                    call.enqueue(object : Callback<ReadingVideoTestAllResponseEmbedded> {
+                        override fun onResponse(
+                            call: Call<ReadingVideoTestAllResponseEmbedded>,
+                            response: Response<ReadingVideoTestAllResponseEmbedded>
+                        ) {
+                            if (response.code() == 200) {
+                                println("Response body: " + response.body().toString())
+                                readingVideoTests = response.body()!!.embedded!!.embedded
+                                //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
+                                thisContext.removeButtons(LinearLayoutTaskSelection)
+
+                                println("Deleted buttons")
+                                for (i in readingVideoTests!!.indices) {
+                                    println("Adding buttonName no. " + i.toString())
+                                    buttonNames =
+                                        buttonNames.plusElement(readingVideoTests!![i].name!!)
+                                }
+                                println("created buttonNames array")
+                                thisContext.createButtons(
+                                    buttonNames,
+                                    LinearLayoutTaskSelection,
+                                    applicationContext
+                                )
+                                println("created buttons")
+                                for (i in thisContext.buttonsArray.indices) {
+                                    thisContext.buttonsArray[i].setOnClickListener() {
+
+                                        if (thisContext.role == "demo") {
+                                            readingVideoTest =
+                                                getReadingVideoTest(demo_readingVideoTest_id)
+
+                                            //START ACTIVITY
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    ReadingWithTestActivity::class.java
+                                                )
+                                            intent.putExtra("ReadingVideoTest", readingVideoTest)
+                                            thisContext.startActivity(intent)
+                                        } else {
+                                            readingVideoTest =
+                                                getReadingVideoTest(readingVideoTests!![i].id)
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    ReadingWithTestActivity::class.java
+                                                )
+                                            intent.putExtra("ReadingVideoTest", readingVideoTest)
+                                            thisContext.startActivity(intent)
+                                        }
+                                    }
+                                }
+                                LinearLayoutTaskSelection.visibility = View.VISIBLE
+                                println("Successfully created buttons")
+                            } else {
+                                println("Response body: " + response.body().toString())
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<ReadingVideoTestAllResponseEmbedded>,
+                            t: Throwable
+                        ) {
+                            println("-- Network error occurred" + t.toString())
+                        }
+                    })
+                    println("Finished downloading ReadingVideoTests this many ->" + readingVideoTests?.size.toString() + " <- pages.")
+
+                }
+            this.openTab = "readingVideoTest"
+            }else {
+                LinearLayoutTaskSelection.visibility = View.INVISIBLE
+                this.openTab = "none"
             }
         }
 
@@ -426,17 +513,11 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 }
             })
             println("Finished downloading ReadingVideoTests this many ->" + readingVideoTests?.size.toString() + " <- pages.")
-
-
         }
         //Creating buttons for Task Selection List
 //        val buttonAmount = 15
 //        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
 //        this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
-
-
     }
-
-
 }
 
