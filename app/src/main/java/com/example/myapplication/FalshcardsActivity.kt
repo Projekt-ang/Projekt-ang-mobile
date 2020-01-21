@@ -16,6 +16,7 @@ class FalshcardsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_falshcards)
         FlashcardsButtonMain.visibility = View.INVISIBLE
+
         var leftSide = "Rhino"
         var rightSide = "A gray animal, which lives in Africa. It has a horn on its nose."
 
@@ -31,7 +32,8 @@ class FalshcardsActivity : AppCompatActivity() {
                 rightSide = "--"
             }
             FlashcardsButtonMain.text = leftSide
-            FlashcardsButtonMain.visibility = View.VISIBLE
+            FlashcardsTitle.text = leftSide
+                FlashcardsButtonMain.visibility = View.VISIBLE
         } else {
             val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(1)
             call.enqueue(object : Callback<Glossarie> {
@@ -45,6 +47,8 @@ class FalshcardsActivity : AppCompatActivity() {
                             leftSide = "--"
                             rightSide = "--"
                         }
+                        FlashcardsButtonMain.text = leftSide
+                        FlashcardsTitle.text = leftSide
                         FlashcardsButtonMain.visibility = View.VISIBLE
                     }
                 }
@@ -54,10 +58,12 @@ class FalshcardsActivity : AppCompatActivity() {
                 }
             })
         }
-        if(intent.hasExtra("demo")){
+        if(intent.hasExtra("demo")) {
             FlashcardsButtonMain.text = leftSide
+            FlashcardsTitle.text = leftSide
             FlashcardsButtonMain.visibility = View.VISIBLE
         }
+        FlashcardsButtonMain.visibility = View.VISIBLE
 
 
         FlashcardsButtonMain.setOnClickListener(){

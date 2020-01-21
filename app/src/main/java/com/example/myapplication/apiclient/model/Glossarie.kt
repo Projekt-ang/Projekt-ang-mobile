@@ -4,6 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
+class GlossarieAllResponseEmbedded() {
+    @SerializedName("_embedded")
+    var embedded: GlossarieAllResponse? = null
+}
+
+class GlossarieAllResponse() {
+    @SerializedName("glossaries")
+    var embedded: Array<Glossarie>? = null
+}
+
+
 class Glossarie() : Parcelable {
     @SerializedName("word")
     var word: String? = null

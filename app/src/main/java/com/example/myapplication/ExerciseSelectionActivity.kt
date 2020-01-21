@@ -149,7 +149,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             //DEMO BEHAVIOUR
 //DEMO BEHAVIOUR
             if (this.openTab != "readingVideoTest") {
-                if (this.role == "demo") {
+                if (this.role == "demo1") {
                     //remove buttons and create new ones
                     var btArr: Array<Button>
                     LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -231,7 +231,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                                     thisContext,
                                                     ReadingWithTestActivity::class.java
                                                 )
-                                            intent.putExtra("ReadingVideoTest", readingVideoTest)
+                                            intent.putExtra("readingVideoTest", readingVideoTest)
                                             thisContext.startActivity(intent)
                                         } else {
                                             readingVideoTest =
@@ -241,7 +241,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                                     thisContext,
                                                     ReadingWithTestActivity::class.java
                                                 )
-                                            intent.putExtra("ReadingVideoTest", readingVideoTest)
+                                            intent.putExtra("readingVideoTest", readingVideoTest)
                                             thisContext.startActivity(intent)
                                         }
                                     }
@@ -272,8 +272,8 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
         SentencesExerciseButton.setOnClickListener {
             //DEMO BEHAVIOUR
-            if (this.role == "demo") {
-                if (this.openTab != "sentences") {
+            if (this.openTab != "sentences") {
+                if (this.role == "demo1") {
                     //remove buttons and create new ones
                     var btArr: Array<Button>
                     LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -294,79 +294,92 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                             this.startActivity(intent)
                         }
                     }
-                    this.openTab = "sentences"
-                } else {
-                    LinearLayoutTaskSelection.visibility = View.INVISIBLE
-                    this.openTab = "none"
-                }
 
-            } else {
-                val demo_sentence_id: Int = 255
-                var sentence: Sentence? = null
-                var sentences: List<Sentence>? = null
-                var buttonNames: Array<String> = emptyArray()
 
-                println("downloading Sentences pages")
-                //GET FIRST PAGE OF RESULTS
-                val call: Call<List<Sentence>> = Services.EXERCISE_SERVICE.getPageSentences()
-                call.enqueue(object : Callback<List<Sentence>> {
-                    override fun onResponse(
-                        call: Call<List<Sentence>>,
-                        response: Response<List<Sentence>>
-                    ) {
-                        if (response.code() == 200) {
-                            println("Response body: " + response.body().toString())
-                            sentences = response.body()!!
+                }else {
+                    val demo_sentence_id: Int = 255
+                    var sentence: Sentence? = null
+                    var sentences: Array<Sentence>? = null
+                    var buttonNames: Array<String> = emptyArray()
 
-                            //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
-                            var btArr: Array<Button>
-                            thisContext.removeButtons(LinearLayoutTaskSelection)
-                            println("Deleted buttons")
-                            for (i in sentences!!.indices!!) {
-                                println("Adding buttonName no. $i")
-                                buttonNames =
-                                    buttonNames.plusElement(sentences!![i].polishSentence!!)
-                            }
-                            println("created buttonNames array")
-                            btArr = thisContext.createButtons(
-                                buttonNames,
-                                LinearLayoutTaskSelection,
-                                applicationContext
-                            )
-                            println("created buttons")
-                            for (i in btArr.indices) {
-                                btArr[i].setOnClickListener() {
+                    println("downloading Sentences pages")
+                    val call: Call<SentenceAllResponseEmbedded> =
+                        Services.EXERCISE_SERVICE.getAllSentences()
+                    call.enqueue(object : Callback<SentenceAllResponseEmbedded> {
+                        override fun onResponse(
+                            call: Call<SentenceAllResponseEmbedded>,
+                            response: Response<SentenceAllResponseEmbedded>
+                        ) {
+                            if (response.code() == 200) {
+                                println("Response body: " + response.body().toString())
+                                sentences = response.body()!!.embedded!!.embedded
+                                //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
+                                thisContext.removeButtons(LinearLayoutTaskSelection)
 
-                                    if (thisContext.role == "demo") {
-                                        sentence = getSentence(demo_sentence_id)
-
-                                        //START ACTIVITY
-                                        val intent =
-                                            Intent(thisContext, SentenceActivity::class.java)
-                                        intent.putExtra("Sentence", sentence)
-                                        thisContext.startActivity(intent)
-                                    } else {
-                                        sentence = getSentence(sentences!![i].id)
-                                        val intent =
-                                            Intent(thisContext, SentenceActivity::class.java)
-                                        intent.putExtra("Sentence", sentence)
-                                        thisContext.startActivity(intent)
+                                println("Deleted buttons")
+                                for (i in sentences!!.indices) {
+                                    println("Adding buttonName no. " + i.toString())
+                                    if (!sentences!![i].polishSentence.isNullOrBlank()) {
+                                        buttonNames =
+                                            buttonNames.plusElement(sentences!![i].polishSentence.toString())
                                     }
                                 }
+                                println("created buttonNames array")
+                                thisContext.createButtons(
+                                    buttonNames,
+                                    LinearLayoutTaskSelection,
+                                    applicationContext
+                                )
+                                println("created buttons")
+                                for (i in thisContext.buttonsArray.indices) {
+                                    thisContext.buttonsArray[i].setOnClickListener() {
+
+                                        if (thisContext.role == "demo") {
+                                            sentence =
+                                                getSentence(demo_sentence_id)
+
+                                            //START ACTIVITY
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    SentenceActivity::class.java
+                                                )
+                                            intent.putExtra("sentence", sentence)
+                                            thisContext.startActivity(intent)
+                                        } else {
+                                            sentence =
+                                                getSentence(sentences!![i].id)
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    SentenceActivity::class.java
+                                                )
+                                            intent.putExtra("sentence", sentence)
+                                            thisContext.startActivity(intent)
+                                        }
+                                    }
+                                }
+                                LinearLayoutTaskSelection.visibility = View.VISIBLE
+                                println("Successfully created buttons")
+                            } else {
+                                println("Response body: " + response.body().toString())
                             }
-                            LinearLayoutTaskSelection.visibility = View.VISIBLE
-                            println("Successfully created buttons")
-                        } else {
-                            println("Response body: " + response.body().toString())
                         }
-                    }
 
-                    override fun onFailure(call: Call<List<Sentence>>, t: Throwable) {
-                        println("-- Network error occurred" + t.toString())
-                    }
-                })
-                println("Finished downloading Sentences pages, count: " + sentences?.size.toString())
+                        override fun onFailure(
+                            call: Call<SentenceAllResponseEmbedded>,
+                            t: Throwable
+                        ) {
+                            println("-- Network error occurred" + t.toString())
+                        }
+                    })
+                    println("Finished downloading Sentences this many ->" + sentences?.size.toString() + " <- pages.")
 
+                }
+                this.openTab = "sentences"
+            }else {
+                LinearLayoutTaskSelection.visibility = View.INVISIBLE
+                this.openTab = "none"
             }
         }
 
@@ -376,10 +389,9 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         FlashcardsExerciseButton.setOnClickListener {
-
             //DEMO BEHAVIOUR
-            if (this.role == "demo") {
-                if (this.openTab != "flashcards") {
+            if (this.openTab != "glossaries") {
+                if (this.role == "demo1") {
                     //remove buttons and create new ones
                     var btArr: Array<Button>
                     LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -394,18 +406,100 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     this.previousSearch = exerciseSearchText.text.toString()
                     for (i in btArr.indices) {
                         btArr[i].setOnClickListener() {
+                            //ENVOKING DEMO ACTIVITY WITH INTENT demo
                             val intent = Intent(this, FalshcardsActivity::class.java)
                             intent.putExtra("demo", true)
                             this.startActivity(intent)
                         }
                     }
-                    this.openTab = "flashcards"
-                } else {
-                    LinearLayoutTaskSelection.visibility = View.INVISIBLE
-                    this.openTab = "none"
-                }
 
+
+                } else {
+                    val demo_glossarie_id: Int = 463
+                    var glossarie: Glossarie? = null
+                    var glossaries: Array<Glossarie>? = null
+                    var buttonNames: Array<String> = emptyArray()
+
+                    println("downloading Glossaries pages")
+                    val call: Call<GlossarieAllResponseEmbedded> =
+                        Services.EXERCISE_SERVICE.getAllGlossaries()
+                    call.enqueue(object : Callback<GlossarieAllResponseEmbedded> {
+                        override fun onResponse(
+                            call: Call<GlossarieAllResponseEmbedded>,
+                            response: Response<GlossarieAllResponseEmbedded>
+                        ) {
+                            if (response.code() == 200) {
+                                println("Response body: " + response.body().toString())
+                                glossaries = response.body()!!.embedded!!.embedded
+                                //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
+                                thisContext.removeButtons(LinearLayoutTaskSelection)
+
+                                println("Deleted buttons")
+                                for (i in glossaries!!.indices) {
+                                    println("Adding buttonName no. " + i.toString())
+                                    if (!glossaries!![i].word.isNullOrBlank()) {
+                                        buttonNames =
+                                            buttonNames.plusElement(glossaries!![i].word.toString())
+                                    }
+                                }
+                                println("created buttonNames array")
+                                thisContext.createButtons(
+                                    buttonNames,
+                                    LinearLayoutTaskSelection,
+                                    applicationContext
+                                )
+                                println("created buttons")
+                                for (i in thisContext.buttonsArray.indices) {
+                                    thisContext.buttonsArray[i].setOnClickListener() {
+
+                                        if (thisContext.role == "demo") {
+                                            glossarie =
+                                                getGlossarie(demo_glossarie_id)
+
+                                            //START ACTIVITY
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    FalshcardsActivity::class.java
+                                                )
+                                            intent.putExtra("glossarie", glossarie)
+                                            thisContext.startActivity(intent)
+                                        } else {
+                                            glossarie =
+                                                getGlossarie(glossaries!![i].id)
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    FalshcardsActivity::class.java
+                                                )
+                                            intent.putExtra("glossarie", glossarie)
+                                            thisContext.startActivity(intent)
+                                        }
+                                    }
+                                }
+                                LinearLayoutTaskSelection.visibility = View.VISIBLE
+                                println("Successfully created buttons")
+                            } else {
+                                println("Response body: " + response.body().toString())
+                            }
+                        }
+
+                        override fun onFailure(
+                            call: Call<GlossarieAllResponseEmbedded>,
+                            t: Throwable
+                        ) {
+                            println("-- Network error occurred" + t.toString())
+                        }
+                    })
+                    println("Finished downloading Glossaries this many ->" + glossaries?.size.toString() + " <- pages.")
+
+                }
+                this.openTab = "glossaries"
+            } else {
+                LinearLayoutTaskSelection.visibility = View.INVISIBLE
+                this.openTab = "none"
             }
+        
         }
 
 

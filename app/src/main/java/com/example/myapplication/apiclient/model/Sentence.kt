@@ -4,6 +4,16 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
+class SentenceAllResponseEmbedded() {
+    @SerializedName("_embedded")
+    var embedded: SentenceAllResponse? = null
+}
+
+class SentenceAllResponse() {
+    @SerializedName("sentences")
+    var embedded: Array<Sentence>? = null
+}
+
 class Sentence() : Parcelable {
     @SerializedName("polishSentence")
     var polishSentence: String? = null
