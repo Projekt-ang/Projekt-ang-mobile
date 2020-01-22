@@ -141,7 +141,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             this.role = intent.extras!!.getString("Role")!!
 
         } else {
-            this.role = "demo"
+            this.role = "demo1"
         }
 
 
@@ -150,6 +150,9 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 //DEMO BEHAVIOUR
             if (this.openTab != "readingVideoTest") {
                 if (this.role == "demo1") {
+                    val demo_readingVideoTest_id: Int = 53
+                    var readingVideoTest: ReadingVideoTest?
+                    var readingVideoTests: Array<ReadingVideoTest>? = null
                     //remove buttons and create new ones
                     var btArr: Array<Button>
                     LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -165,11 +168,30 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     for (i in btArr.indices) {
                         btArr[i].setOnClickListener() {
                             //ENVOKING DEMO ACTIVITY WITH INTENT demo
-                            val intent = Intent(this, ReadingWithTestActivity::class.java)
-                            intent.putExtra("demo", true)
-                            this.startActivity(intent)
+                        val call: Call<ReadingVideoTest> =
+                            Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(demo_readingVideoTest_id)
+                        call.enqueue(object : Callback<ReadingVideoTest> {
+                            override fun onResponse(
+                                call: Call<ReadingVideoTest>,
+                                response: Response<ReadingVideoTest>
+                            ) {
+                                if (response.code() == 200) {
+                                    readingVideoTest = response.body()!!
+                                    //START ACTIVITY
+                                    val intent =
+                                        Intent(thisContext, ReadingWithTestActivity::class.java)
+                                    intent.putExtra("readingVideoTest", readingVideoTest)
+                                    thisContext.startActivity(intent)
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
+                                println("-- Network error occured")
+                            }
+                        })
                         }
                     }
+
 
                 } else {
                     val demo_readingVideoTest_id: Int = 53
@@ -271,6 +293,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             //DEMO BEHAVIOUR
             if (this.openTab != "sentences") {
                 if (this.role == "demo1") {
+                    val demo_sentence_id: Int = 255
                     //remove buttons and create new ones
                     var btArr: Array<Button>
                     LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -285,10 +308,29 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     this.previousSearch = exerciseSearchText.text.toString()
                     for (i in btArr.indices) {
                         btArr[i].setOnClickListener() {
-                            //ENVOKING DEMO ACTIVITY WITH INTENT demo
-                            val intent = Intent(this, SentenceActivity::class.java)
-                            intent.putExtra("demo", true)
-                            this.startActivity(intent)
+
+                            var sentence: Sentence? = null
+                            val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(demo_sentence_id)
+                            call.enqueue(object : Callback<Sentence> {
+                                override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
+                                    if (response.code() == 200) {
+                                        sentence = response.body()!!
+                                        //START ACTIVITY
+                                        val intent =
+                                            Intent(
+                                                thisContext,
+                                                SentenceActivity::class.java
+                                            )
+                                        intent.putExtra("sentence", sentence)
+                                        intent.putExtra("demo", true)
+                                        thisContext.startActivity(intent)
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<Sentence>, t: Throwable) {
+                                    println("-- Network error occured")
+                                }
+                            })
                         }
                     }
 
@@ -332,20 +374,29 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
                                         if (thisContext.role == "demo") {
-                                            sentence =
-                                                getSentence(demo_sentence_id)
+                                            var sentence: Sentence? = null
+                                            val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(demo_sentence_id)
+                                            call.enqueue(object : Callback<Sentence> {
+                                                override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
+                                                    if (response.code() == 200) {
+                                                        sentence = response.body()!!
+                                                        //START ACTIVITY
+                                                        val intent =
+                                                            Intent(
+                                                                thisContext,
+                                                                SentenceActivity::class.java
+                                                            )
+                                                        intent.putExtra("sentence", sentence)
+                                                        thisContext.startActivity(intent)
+                                                    }
+                                                }
 
-                                            //START ACTIVITY
-                                            val intent =
-                                                Intent(
-                                                    thisContext,
-                                                    SentenceActivity::class.java
-                                                )
-                                            intent.putExtra("sentence", sentence)
-                                            thisContext.startActivity(intent)
+                                                override fun onFailure(call: Call<Sentence>, t: Throwable) {
+                                                    println("-- Network error occured")
+                                                }
+                                            })
                                         } else {
-                                            sentence =
-                                                getSentence(sentences!![i].id)
+                                            sentence = sentences!![i]
                                             val intent =
                                                 Intent(
                                                     thisContext,
@@ -389,6 +440,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             //DEMO BEHAVIOUR
             if (this.openTab != "glossaries") {
                 if (this.role == "demo1") {
+                    val demo_glossarie_id: Int = 463
                     //remove buttons and create new ones
                     var btArr: Array<Button>
                     LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -404,9 +456,28 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     for (i in btArr.indices) {
                         btArr[i].setOnClickListener() {
                             //ENVOKING DEMO ACTIVITY WITH INTENT demo
-                            val intent = Intent(this, FalshcardsActivity::class.java)
-                            intent.putExtra("demo", true)
-                            this.startActivity(intent)
+                            var glossarie: Glossarie? = null
+                            val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(demo_glossarie_id)
+                            call.enqueue(object : Callback<Glossarie> {
+                                override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
+                                    if (response.code() == 200) {
+                                        glossarie = response.body()!!
+                                        //START ACTIVITY
+                                        val intent =
+                                            Intent(
+                                                thisContext,
+                                                FalshcardsActivity::class.java
+                                            )
+                                        intent.putExtra("glossarie", glossarie)
+                                        intent.putExtra("demo", true)
+                                        thisContext.startActivity(intent)
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<Glossarie>, t: Throwable) {
+                                    println("-- Network error occured")
+                                }
+                            })
                         }
                     }
 
@@ -450,20 +521,30 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
                                         if (thisContext.role == "demo") {
-                                            glossarie =
-                                                getGlossarie(demo_glossarie_id)
+                                            var glossarie: Glossarie? = null
+                                            val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(demo_glossarie_id)
+                                            call.enqueue(object : Callback<Glossarie> {
+                                                override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
+                                                    if (response.code() == 200) {
+                                                        glossarie = response.body()!!
+                                                        //START ACTIVITY
+                                                        val intent =
+                                                            Intent(
+                                                                thisContext,
+                                                                FalshcardsActivity::class.java
+                                                            )
+                                                        intent.putExtra("glossarie", glossarie)
+                                                        thisContext.startActivity(intent)
+                                                    }
+                                                }
 
-                                            //START ACTIVITY
-                                            val intent =
-                                                Intent(
-                                                    thisContext,
-                                                    FalshcardsActivity::class.java
-                                                )
-                                            intent.putExtra("glossarie", glossarie)
-                                            thisContext.startActivity(intent)
+                                                override fun onFailure(call: Call<Glossarie>, t: Throwable) {
+                                                    println("-- Network error occured")
+                                                }
+                                            })
+
                                         } else {
-                                            glossarie =
-                                                getGlossarie(glossaries!![i].id)
+                                            glossarie = glossaries!![i]
                                             val intent =
                                                 Intent(
                                                     thisContext,
