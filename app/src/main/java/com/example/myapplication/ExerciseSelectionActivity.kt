@@ -600,7 +600,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         if ( this.buttonsArray[i].text.toString().contains(exerciseSearchText.text.toString())){
                             buttonsArray[i].visibility = View.VISIBLE
                         } else {
-                            buttonsArray[i].visibility = View.INVISIBLE
+                            buttonsArray[i].visibility = View.GONE
                         }
                     }
                     this.previousSearch = exerciseSearchText.text.toString()
