@@ -23,8 +23,7 @@ class ReadingWithTestActivity : AppCompatActivity() {
             textView4.text = HtmlCompat.fromHtml(readingVideoTest.text!!, 0)
             buttonQuestion.isEnabled = true
         } else {
-            val call: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(
-                readingVideoTest!!.id)
+            val call: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(53)
             call.enqueue(object : Callback<ReadingVideoTest> {
                 override fun onResponse(call: Call<ReadingVideoTest>, response: Response<ReadingVideoTest>) {
                     if (response.code() == 200) {
