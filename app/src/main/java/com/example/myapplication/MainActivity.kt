@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                         println("Response body: " + response.body().toString())
                         users = response.body()!!.embedded!!.embedded
                         for (i in users!!.indices){
+                            //HASHING TO BE ADDED HERE
                             if (users!![i].username.toString() == usernm && users!![i].password.toString() == passwd) {
                                 val intent = Intent(thisContext, ExerciseSelectionActivity::class.java)
                                 intent.putExtra("Role", usernm)
