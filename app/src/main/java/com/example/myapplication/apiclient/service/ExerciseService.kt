@@ -22,4 +22,7 @@ interface ExerciseService {
     fun getAllGlossaries(): Call<GlossarieAllResponseEmbedded>
     @GET("glossaries/{id}")
     fun getGlossarie(@Path("id") id: Int): Call<Glossarie>
+
+    @GET("users")
+    fun getAllUsers(): Call<UserAllResponseEmbedded>
 }
