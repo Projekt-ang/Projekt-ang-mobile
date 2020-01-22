@@ -589,13 +589,22 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
             else {
-                //remove buttons and create new ones
-                LinearLayoutTaskSelection.visibility = View.VISIBLE
-                this.removeButtons(LinearLayoutTaskSelection)
-                val text = exerciseSearchText.text
-                var buttonNames = Array(Random.nextInt(1, 5)) { i -> "$text " + (i + 1) }
-                this.createButtons(buttonNames, LinearLayoutTaskSelection, applicationContext)
-                this.previousSearch = exerciseSearchText.text.toString()
+                if (this.buttonsArray.isEmpty()){
+                    Toast.makeText(
+                        applicationContext,
+                        "Select non empty category fisrst!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    for (i in this.buttonsArray.indices){
+                        if ( this.buttonsArray[i].text.toString().contains(exerciseSearchText.text.toString())){
+                            buttonsArray[i].visibility = View.VISIBLE
+                        } else {
+                            buttonsArray[i].visibility = View.INVISIBLE
+                        }
+                    }
+                    this.previousSearch = exerciseSearchText.text.toString()
+                }
             }
         }
 
