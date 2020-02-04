@@ -12,16 +12,22 @@ interface ExerciseService {
     fun getAllRedingVideoTests(): Call<ReadingVideoTestAllResponseEmbedded>
     @GET("readingVideoTests/{id}")
     fun getReadingVideoTest(@Path("id") id: Int): Call<ReadingVideoTest>
+    @GET("readingVideoTests/{id}/tags")
+    fun getReadingVideoTestTags(@Path("id") id: Int): Call<TagsResponseEmbedded>
 
     @GET("sentences")
     fun getAllSentences(): Call<SentenceAllResponseEmbedded>
     @GET("sentences/{id}")
     fun getSentence(@Path("id") id: Int): Call<Sentence>
+    @GET("sentences/{id}/tags")
+    fun getSentenceTags(@Path("id") id: Int): Call<TagsResponseEmbedded>
 
     @GET("glossaries")
     fun getAllGlossaries(): Call<GlossarieAllResponseEmbedded>
     @GET("glossaries/{id}")
     fun getGlossarie(@Path("id") id: Int): Call<Glossarie>
+    @GET("glossaries/{id}/tags")
+    fun getGlossarieTags(@Path("id") id: Int): Call<TagsResponseEmbedded>
 
     @GET("users")
     fun getAllUsers(): Call<UserAllResponseEmbedded>

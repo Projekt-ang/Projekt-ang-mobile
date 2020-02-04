@@ -4,18 +4,30 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
-class Question() : Parcelable {
+class TagsResponseEmbedded() {
+    @SerializedName("_embedded")
+    var embedded: TagsResponse? = null
+}
+
+class TagsResponse() {
+    @SerializedName("tags")
+    var embedded: Array<Tags>? = null
+}
+
+class Tags() : Parcelable {
     @SerializedName("id")
     var id: Int = 0
 
-    @SerializedName("question")
+    @SerializedName("text")
     var text: String? = null
 
     constructor(parcel: Parcel) : this() {
+        id = parcel.readInt()
         text = parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(id)
         parcel.writeString(text)
     }
 
@@ -23,12 +35,12 @@ class Question() : Parcelable {
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<Question> {
-        override fun createFromParcel(parcel: Parcel): Question {
-            return Question(parcel)
+    companion object CREATOR : Parcelable.Creator<Tags> {
+        override fun createFromParcel(parcel: Parcel): Tags {
+            return Tags(parcel)
         }
 
-        override fun newArray(size: Int): Array<Question?> {
+        override fun newArray(size: Int): Array<Tags?> {
             return arrayOfNulls(size)
         }
     }

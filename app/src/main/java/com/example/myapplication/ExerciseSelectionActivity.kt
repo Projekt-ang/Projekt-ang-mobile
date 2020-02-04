@@ -21,65 +21,66 @@ import kotlin.random.Random
 class ExerciseSelectionActivity : AppCompatActivity() {
     private var previousSearch = ""
     private var buttonsArray: Array<Button> = arrayOf()
+    var buttonComplexArray: Array<ButtonComplex> = arrayOf()
     private var role: String? = "demo"
     var thisContext = this
     var openTab = "none"
 
-    private fun getSentence(id: Int): Sentence? {
-        var sentence: Sentence? = null
-        val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(id)
-        call.enqueue(object : Callback<Sentence> {
-            override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
-                if (response.code() == 200) {
-                    sentence = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<Sentence>, t: Throwable) {
-                println("-- Network error occured")
-            }
-        })
-        return sentence
-    }
-
-    private fun getReadingVideoTest(id: Int): ReadingVideoTest? {
-        var readingVideoTest: ReadingVideoTest? = null
-        val call: Call<ReadingVideoTest> =
-            Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(id)
-        call.enqueue(object : Callback<ReadingVideoTest> {
-            override fun onResponse(
-                call: Call<ReadingVideoTest>,
-                response: Response<ReadingVideoTest>
-            ) {
-                if (response.code() == 200) {
-                    readingVideoTest = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
-                println("-- Network error occured")
-            }
-        })
-        return readingVideoTest
-    }
-
-    private fun getGlossarie(id: Int): Glossarie? {
-        var glossarie: Glossarie? = null
-        val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(id)
-        call.enqueue(object : Callback<Glossarie> {
-            override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
-                if (response.code() == 200) {
-                    glossarie = response.body()!!
-                }
-            }
-
-            override fun onFailure(call: Call<Glossarie>, t: Throwable) {
-                println("-- Network error occured")
-            }
-        })
-        return glossarie
-    }
-
+//    private fun getSentence(id: Int): Sentence? {
+//        var sentence: Sentence? = null
+//        val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(id)
+//        call.enqueue(object : Callback<Sentence> {
+//            override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
+//                if (response.code() == 200) {
+//                    sentence = response.body()!!
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<Sentence>, t: Throwable) {
+//                println("-- Network error occured")
+//            }
+//        })
+//        return sentence
+//    }
+//
+//    private fun getReadingVideoTest(id: Int): ReadingVideoTest? {
+//        var readingVideoTest: ReadingVideoTest? = null
+//        val call: Call<ReadingVideoTest> =
+//            Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(id)
+//        call.enqueue(object : Callback<ReadingVideoTest> {
+//            override fun onResponse(
+//                call: Call<ReadingVideoTest>,
+//                response: Response<ReadingVideoTest>
+//            ) {
+//                if (response.code() == 200) {
+//                    readingVideoTest = response.body()!!
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
+//                println("-- Network error occured")
+//            }
+//        })
+//        return readingVideoTest
+//    }
+//
+//    private fun getGlossarie(id: Int): Glossarie? {
+//        var glossarie: Glossarie? = null
+//        val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(id)
+//        call.enqueue(object : Callback<Glossarie> {
+//            override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
+//                if (response.code() == 200) {
+//                    glossarie = response.body()!!
+//                }
+//            }
+//
+//            override fun onFailure(call: Call<Glossarie>, t: Throwable) {
+//                println("-- Network error occured")
+//            }
+//        })
+//        return glossarie
+//    }
+//
 
     private fun removeButtons(layout: LinearLayout, btArr: Array<Button>? = null) {
         for (button in this.buttonsArray) {
@@ -87,31 +88,91 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
         buttonDemoExample.visibility = View.GONE
         this.buttonsArray = arrayOf()
+        this.buttonComplexArray = arrayOf()
     }
 
     //Creates list of buttons in a given view with given names.
     private fun createButtons(
         buttonNames: Array<String>,
         DestLinearLayout: LinearLayout,
-        thisContext: Context
+        thisContext: Context,
+        id: Array<Int> = emptyArray(),
+        type: String = "none"
     ): Array<Button> {
 
         //array of created buttons. can be used to edit them.
         var buttonsArr: Array<Button>
         buttonsArr = arrayOf()
         //creates button item and adds it to a given view
-        for (buttonName in buttonNames) {
+        for (i in buttonNames.indices) {
             val newButton = Button(thisContext)
             newButton.layoutParams = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_PARENT,
                 ConstraintLayout.LayoutParams.MATCH_PARENT
             )
-            newButton.text = buttonName
+            newButton.text = buttonNames[i]
             newButton.setOnClickListener {
                 Toast.makeText(thisContext, "Add Reading Test here.", Toast.LENGTH_SHORT).show()
             }
             DestLinearLayout.addView(newButton)
             buttonsArr = buttonsArr.plusElement(newButton)
+
+
+            if (!id.isNullOrEmpty() && type != "none") {
+                var tagsObj: Array<Tags>? = arrayOf()
+
+                //temporal value
+                var call: Call<TagsResponseEmbedded>? = null
+
+                if (type == "readingVideoTest") {
+                    call =
+                        Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTestTags(id[i])
+                }
+                if (type == "glossarie") {
+                    call =
+                        Services.EXERCISE_SERVICE.getGlossarieTags(id[i])
+                }
+                if (type == "sentences") {
+                    call =
+                        Services.EXERCISE_SERVICE.getSentenceTags(id[i])
+                }
+                var thisContext = this
+
+                call!!.enqueue(object : Callback<TagsResponseEmbedded> {
+                    override fun onResponse(
+                        call: Call<TagsResponseEmbedded>,
+                        response: Response<TagsResponseEmbedded>
+                    ) {
+                        if (response.code() == 200) {
+                            println("----- TAGS Response body: " + response.body().toString())
+                            tagsObj = response.body()!!.embedded!!.embedded
+                            var tags : Array<String> = arrayOf()
+
+
+                            if (!tagsObj.isNullOrEmpty()) {
+                                for (tag in tagsObj!!) {
+                                    tags = tags.plusElement(tag.text.toString())
+                                }
+                            }
+
+                            thisContext.buttonComplexArray =
+                                thisContext.buttonComplexArray.plusElement(ButtonComplex(newButton, tags))
+
+                        } else {
+                            println("-----TAGS Response body: " + response.body().toString())
+                        }
+                    }
+
+                    override fun onFailure(
+                        call: Call<TagsResponseEmbedded>,
+                        t: Throwable
+                    ) {
+                        println("------TAGS  Network error occurred" + t.toString())
+                    }
+                })
+
+
+            }
         }
         this.buttonsArray = buttonsArr
         Toast.makeText(
@@ -119,6 +180,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             "Showing " + this.buttonsArray.size + " results",
             Toast.LENGTH_SHORT
         ).show()
+
+
+
+
+
+
+
         //returns Array of buttons for future refference i.e. button editing, etc, but the array is also added to global variable
         return buttonsArr
     }
@@ -198,6 +266,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     var readingVideoTest: ReadingVideoTest?
                     var readingVideoTests: Array<ReadingVideoTest>? = null
                     var buttonNames: Array<String> = emptyArray()
+                    var buttonIds: Array<Int> = emptyArray()
 
                     println("downloading ReadingVideoTests pages")
 
@@ -214,46 +283,30 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 readingVideoTests = response.body()!!.embedded!!.embedded
                                 //CREATE BUTTONS FROM FIRST PAGE OF RESULTS
                                 thisContext.removeButtons(LinearLayoutTaskSelection)
-
                                 println("Deleted buttons")
+
+
                                 for (i in readingVideoTests!!.indices) {
                                     println("Adding buttonName no. " + i.toString())
                                     buttonNames =
                                         buttonNames.plusElement(readingVideoTests!![i].name!!)
+                                    buttonIds =
+                                        buttonIds.plusElement(readingVideoTests!![i].id!!)
                                 }
                                 println("created buttonNames array")
                                 thisContext.createButtons(
                                     buttonNames,
                                     LinearLayoutTaskSelection,
-                                    applicationContext
+                                    applicationContext,
+                                    buttonIds,
+                                    "readingVideoTest"
                                 )
                                 println("created buttons")
+
+
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                        if (thisContext.role == "demo") {
-                                            val call: Call<ReadingVideoTest> =
-                                                Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(demo_readingVideoTest_id)
-                                            call.enqueue(object : Callback<ReadingVideoTest> {
-                                                override fun onResponse(
-                                                    call: Call<ReadingVideoTest>,
-                                                    response: Response<ReadingVideoTest>
-                                                ) {
-                                                    if (response.code() == 200) {
-                                                        readingVideoTest = response.body()!!
-                                                        //START ACTIVITY
-                                                        val intent =
-                                                            Intent(thisContext, ReadingWithTestActivity::class.java)
-                                                        intent.putExtra("readingVideoTest", readingVideoTest)
-                                                        thisContext.startActivity(intent)
-                                                    }
-                                                }
-
-                                                override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
-                                                    println("-- Network error occured")
-                                                }
-                                            })
-                                        } else {
                                             readingVideoTest = readingVideoTests!![i]
                                             val intent =
                                                 Intent(
@@ -264,7 +317,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                             thisContext.startActivity(intent)
                                         }
                                     }
-                                }
+
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
                                 println("Successfully created buttons")
                             } else {
@@ -340,6 +393,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     var sentence: Sentence? = null
                     var sentences: Array<Sentence>? = null
                     var buttonNames: Array<String> = emptyArray()
+                    var buttonIds: Array<Int> = emptyArray()
 
                     println("downloading Sentences pages")
                     val call: Call<SentenceAllResponseEmbedded> =
@@ -361,41 +415,22 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                     if (!sentences!![i].polishSentence.isNullOrBlank()) {
                                         buttonNames =
                                             buttonNames.plusElement(sentences!![i].polishSentence.toString())
+                                        buttonIds =
+                                            buttonIds.plusElement(sentences!![i].id!!)
                                     }
                                 }
                                 println("created buttonNames array")
                                 thisContext.createButtons(
                                     buttonNames,
                                     LinearLayoutTaskSelection,
-                                    applicationContext
+                                    applicationContext,
+                                    buttonIds,
+                                    "sentences"
                                 )
                                 println("created buttons")
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                        if (thisContext.role == "demo") {
-                                            var sentence: Sentence? = null
-                                            val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(demo_sentence_id)
-                                            call.enqueue(object : Callback<Sentence> {
-                                                override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
-                                                    if (response.code() == 200) {
-                                                        sentence = response.body()!!
-                                                        //START ACTIVITY
-                                                        val intent =
-                                                            Intent(
-                                                                thisContext,
-                                                                SentenceActivity::class.java
-                                                            )
-                                                        intent.putExtra("sentence", sentence)
-                                                        thisContext.startActivity(intent)
-                                                    }
-                                                }
-
-                                                override fun onFailure(call: Call<Sentence>, t: Throwable) {
-                                                    println("-- Network error occured")
-                                                }
-                                            })
-                                        } else {
                                             sentence = sentences!![i]
                                             val intent =
                                                 Intent(
@@ -405,7 +440,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                             intent.putExtra("sentence", sentence)
                                             thisContext.startActivity(intent)
                                         }
-                                    }
+
                                 }
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
                                 println("Successfully created buttons")
@@ -432,9 +467,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
 
-        ExerciseGoToSearchButton.setOnClickListener {
-            this.switchVisibility(LinearLayoutExerciseSearch, View.GONE)
-        }
 
         FlashcardsExerciseButton.setOnClickListener {
             //DEMO BEHAVIOUR
@@ -487,6 +519,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     var glossarie: Glossarie? = null
                     var glossaries: Array<Glossarie>? = null
                     var buttonNames: Array<String> = emptyArray()
+                    var buttonIds: Array<Int> = emptyArray()
 
                     println("downloading Glossaries pages")
                     val call: Call<GlossarieAllResponseEmbedded> =
@@ -508,42 +541,22 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                     if (!glossaries!![i].word.isNullOrBlank()) {
                                         buttonNames =
                                             buttonNames.plusElement(glossaries!![i].word.toString())
+                                        buttonIds =
+                                            buttonIds.plusElement(glossaries!![i].id!!)
                                     }
                                 }
                                 println("created buttonNames array")
                                 thisContext.createButtons(
                                     buttonNames,
                                     LinearLayoutTaskSelection,
-                                    applicationContext
+                                    applicationContext,
+                                    buttonIds,
+                                    "glossarie"
                                 )
                                 println("created buttons")
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                        if (thisContext.role == "demo") {
-                                            var glossarie: Glossarie? = null
-                                            val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(demo_glossarie_id)
-                                            call.enqueue(object : Callback<Glossarie> {
-                                                override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
-                                                    if (response.code() == 200) {
-                                                        glossarie = response.body()!!
-                                                        //START ACTIVITY
-                                                        val intent =
-                                                            Intent(
-                                                                thisContext,
-                                                                FalshcardsActivity::class.java
-                                                            )
-                                                        intent.putExtra("glossarie", glossarie)
-                                                        thisContext.startActivity(intent)
-                                                    }
-                                                }
-
-                                                override fun onFailure(call: Call<Glossarie>, t: Throwable) {
-                                                    println("-- Network error occured")
-                                                }
-                                            })
-
-                                        } else {
                                             glossarie = glossaries!![i]
                                             val intent =
                                                 Intent(
@@ -554,7 +567,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                             thisContext.startActivity(intent)
                                         }
                                     }
-                                }
+
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
                                 println("Successfully created buttons")
                             } else {
@@ -581,6 +594,9 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
 
+        ExerciseGoToSearchButton.setOnClickListener {
+            this.switchVisibility(LinearLayoutExerciseSearch, View.GONE)
+        }
 
         exerciseSearchButton.setOnClickListener {
             if (exerciseSearchText.text.toString() == "Search For Exercises by title..." || exerciseSearchText.text.toString() == this.previousSearch) Toast.makeText(
@@ -608,6 +624,36 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             }
         }
 
+        exerciseSearchTagButton.setOnClickListener(){
+            if (exerciseSearchTagText.text.toString() == "Search by tag..." || exerciseSearchTagText.text.toString() == this.previousSearch) Toast.makeText(
+                applicationContext,
+                "Write a search phrase first!",
+                Toast.LENGTH_SHORT
+            ).show()
+            else {
+                if (this.buttonComplexArray.isEmpty()){
+                    Toast.makeText(
+                        applicationContext,
+                        "Select non empty category first!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    for (i in this.buttonComplexArray.indices){
+                        buttonComplexArray[i].button.visibility = View.GONE
+                        for (j in this.buttonComplexArray[i].tags.indices) {
+                            if (this.buttonComplexArray[i].tags[j].contains(
+                                    exerciseSearchTagText.text.toString()
+                                )
+                            ) {
+                                buttonComplexArray[i].button.visibility = View.VISIBLE
+                            }
+                        }
+                    }
+                    this.previousSearch = exerciseSearchTagText.text.toString()
+                }
+            }
+        }
+
         buttonDemoExample.setOnClickListener {
 
 
@@ -620,6 +666,12 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
     }
 
+
+}
+
+class ButtonComplex(bt: Button, tgs: Array<String>){
+    var button : Button= bt
+    var tags : Array<String> = tgs
 
 }
 

@@ -13,4 +13,6 @@ interface ReadingVideoTestService {
     fun getReadingVideoTest(@Path("id") id: Int): Call<ReadingVideoTest>
     @GET("readingVideoTests/{id}/questions")
     fun getReadingVideoTestQuestions(@Path("id") id: Int): Call<QuestionsResponseEmbedded>
+    @GET("readingVideoTests/{id}/tags")
+    fun getReadingVideoTestTags(@Path("id") id: Int): Call<TagsResponseEmbedded>
 }
