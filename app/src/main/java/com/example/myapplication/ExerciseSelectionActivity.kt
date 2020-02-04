@@ -22,6 +22,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
     private var previousSearch = ""
     private var buttonsArray: Array<Button> = arrayOf()
     var buttonComplexArray: Array<ButtonComplex> = arrayOf()
+    var newButtonComplexArray: Array<ButtonComplex> = arrayOf()
     private var role: String? = "demo"
     var thisContext = this
     var openTab = "none"
@@ -89,6 +90,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         buttonDemoExample.visibility = View.GONE
         this.buttonsArray = arrayOf()
         this.buttonComplexArray = arrayOf()
+        this.newButtonComplexArray = arrayOf()
     }
 
     //Creates list of buttons in a given view with given names.
@@ -156,7 +158,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                             }
 
                             thisContext.buttonComplexArray =
-                                thisContext.buttonComplexArray.plusElement(ButtonComplex(newButton, tags))
+                                thisContext.buttonComplexArray.plusElement(ButtonComplex(newButton, tags, id[i], type))
 
                         } else {
                             println("-----TAGS Response body: " + response.body().toString())
@@ -202,6 +204,10 @@ class ExerciseSelectionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercise_selection)
+
+        var glossaries: Array<Glossarie>? = null
+        var readingVideoTests: Array<ReadingVideoTest>? = null
+        var sentences: Array<Sentence>? = null
 
 
 
@@ -264,7 +270,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 } else {
                     val demo_readingVideoTest_id: Int = 53
                     var readingVideoTest: ReadingVideoTest?
-                    var readingVideoTests: Array<ReadingVideoTest>? = null
                     var buttonNames: Array<String> = emptyArray()
                     var buttonIds: Array<Int> = emptyArray()
 
@@ -391,7 +396,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 }else {
                     val demo_sentence_id: Int = 255
                     var sentence: Sentence? = null
-                    var sentences: Array<Sentence>? = null
                     var buttonNames: Array<String> = emptyArray()
                     var buttonIds: Array<Int> = emptyArray()
 
@@ -517,7 +521,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 } else {
                     val demo_glossarie_id: Int = 463
                     var glossarie: Glossarie? = null
-                    var glossaries: Array<Glossarie>? = null
                     var buttonNames: Array<String> = emptyArray()
                     var buttonIds: Array<Int> = emptyArray()
 
@@ -638,6 +641,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
+                    newButtonComplexArray = arrayOf()
                     for (i in this.buttonComplexArray.indices){
                         buttonComplexArray[i].button.visibility = View.GONE
                         for (j in this.buttonComplexArray[i].tags.indices) {
@@ -646,6 +650,47 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 )
                             ) {
                                 buttonComplexArray[i].button.visibility = View.VISIBLE
+                            }
+                        }
+                        if (buttonComplexArray[i].button.visibility == View.VISIBLE){
+                            newButtonComplexArray = newButtonComplexArray.plusElement(buttonComplexArray[i])
+                        }
+                    }
+
+
+                    var glossarieSetIds : ArrayList<Int> = arrayListOf()
+
+                    for (button in newButtonComplexArray){
+                        if (button.type == "glossarie") {
+
+                            if (!glossaries.isNullOrEmpty()) {
+                                for (glossarie in glossaries!!) {
+                                    if (glossarie.id == button.id) {
+                                        glossarieSetIds.add(button.id)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    for (button in newButtonComplexArray){
+                        if (button.type == "glossarie") {
+
+                            if (!glossaries.isNullOrEmpty()) {
+                                for (glossarie in glossaries!!) {
+                                    button.button.setOnClickListener() {
+                                        Toast.makeText(thisContext, "Launching " + exerciseSearchTagText.text.toString() + " set", Toast.LENGTH_SHORT).show()
+                                        println("--------------------Launching " + exerciseSearchTagText.text.toString() + " set")
+
+                                        val intent =
+                                            Intent(
+                                                thisContext,
+                                                FalshcardsActivity::class.java
+                                            )
+                                        intent.putExtra("glossarieSet", glossarieSetIds)
+                                        thisContext.startActivity(intent)
+
+                                    }
+                                }
                             }
                         }
                     }
@@ -669,9 +714,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
 }
 
-class ButtonComplex(bt: Button, tgs: Array<String>){
+class ButtonComplex(bt: Button, tgs: Array<String>, tmpId:Int = 0, tmpType: String = "none"){
     var button : Button= bt
+    var id: Int = tmpId
     var tags : Array<String> = tgs
+    var type : String = tmpType
 
 }
+
+
 
