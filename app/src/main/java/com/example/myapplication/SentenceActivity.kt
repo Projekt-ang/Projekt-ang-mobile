@@ -126,7 +126,7 @@ class SentenceActivity : AppCompatActivity() {
         textView.background = AppCompatResources.getDrawable(this, R.drawable.border_sentence)
         ContextCompat.getColor(this, R.color.colorLight)
         textView.gravity = Gravity.NO_GRAVITY
-        textView.setPadding(48,24,48,24)
+        textView.setPadding(32,16,32,16)
         textView.text = text
         textView.isClickable = false
         textView.isFocusable = false
