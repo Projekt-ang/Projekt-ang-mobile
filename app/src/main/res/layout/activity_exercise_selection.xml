@@ -39,6 +39,13 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
+                <Switch
+                    android:id="@+id/RoleSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Enable results only for your role" />
+
                 <Button
                     android:id="@+id/buttonReadingTestExercise"
                     android:layout_width="match_parent"
