@@ -23,6 +23,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
     var buttonComplexArray: Array<ButtonComplex> = arrayOf()
     var newButtonComplexArray: Array<ButtonComplex> = arrayOf()
     private var role: String? = "demo"
+    private var enableRole : Boolean = true
     var thisContext = this
     var openTab = "none"
 
@@ -115,27 +116,38 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             newButton.setOnClickListener {
                 Toast.makeText(thisContext, "Add Reading Test here.", Toast.LENGTH_SHORT).show()
             }
+            if (enableRole){
+                newButton.visibility = View.GONE
+            }
             DestLinearLayout.addView(newButton)
             buttonsArr = buttonsArr.plusElement(newButton)
 
 
             if (!id.isNullOrEmpty() && type != "none") {
                 var tagsObj: Array<Tags>? = arrayOf()
+                var rolesObj: Array<Role>? = arrayOf()
 
                 //temporal value
                 var call: Call<TagsResponseEmbedded>? = null
+                var call2: Call<RoleResponseEmbedded>? = null
 
                 if (type == "readingVideoTest") {
                     call =
                         Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTestTags(id[i])
+                    call2 =
+                        Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTestRoles(id[i])
                 }
                 if (type == "glossarie") {
                     call =
                         Services.EXERCISE_SERVICE.getGlossarieTags(id[i])
+                    call2 =
+                        Services.EXERCISE_SERVICE.getGlossarieRoles(id[i])
                 }
                 if (type == "sentences") {
                     call =
                         Services.EXERCISE_SERVICE.getSentenceTags(id[i])
+                    call2 =
+                        Services.EXERCISE_SERVICE.getSentenceRoles(id[i])
                 }
                 var thisContext = this
 
@@ -156,8 +168,93 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 }
                             }
 
-                            thisContext.buttonComplexArray =
-                                thisContext.buttonComplexArray.plusElement(ButtonComplex(newButton, tags, id[i], type))
+
+
+                            if (enableRole){
+
+                                call2!!.enqueue(object : Callback<RoleResponseEmbedded> {
+                                    override fun onResponse(
+                                        call2: Call<RoleResponseEmbedded>,
+                                        response2: Response<RoleResponseEmbedded>
+                                    ) {
+                                        if (response2.code() == 200) {
+                                            println("----- ROLES Response body: " + response2.body().toString())
+                                            rolesObj = response2.body()!!.embedded!!.embedded
+                                            var roles : Array<String> = arrayOf()
+
+
+                                            if (!rolesObj.isNullOrEmpty()) {
+                                                for (r in rolesObj!!) {
+                                                    roles = roles.plusElement(r.text.toString())
+                                                }
+                                            }
+
+                                            thisContext.buttonComplexArray =
+                                                thisContext.buttonComplexArray.plusElement(
+                                                    ButtonComplex(
+                                                        newButton,
+                                                        tags,
+                                                        id[i],
+                                                        type,
+                                                        rls = roles
+                                                    )
+                                                )
+                                            for (button in buttonComplexArray) {
+                                                if (thisContext.buttonComplexArray.isEmpty()){
+                                                    Toast.makeText(
+                                                        applicationContext,
+                                                        "Something went wrong with roles",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                } else {
+                                                    newButtonComplexArray = arrayOf()
+                                                    for (i in thisContext.buttonComplexArray.indices) {
+                                                        for (j in thisContext.buttonComplexArray[i].roles.indices) {
+                                                            println("-----+++++++ROLES Role found: " + thisContext.buttonComplexArray[i].roles[j])
+                                                            var rrrrr = thisContext.buttonComplexArray[i].roles[j]
+                                                            if (thisContext.buttonComplexArray[i].roles[j].contains(
+                                                                    role.toString().toUpperCase()
+                                                                )
+                                                            ) {
+                                                                buttonComplexArray[i].button.visibility = View.VISIBLE
+                                                            } else {
+
+                                                            }
+                                                        }
+                                                        if (buttonComplexArray[i].button.visibility == View.VISIBLE) {
+                                                            newButtonComplexArray =
+                                                                newButtonComplexArray.plusElement(buttonComplexArray[i])
+                                                        }
+                                                    }
+                                                    var tmp = newButtonComplexArray
+                                                    buttonComplexArray = newButtonComplexArray
+                                                }
+                                            }
+                                        } else {
+                                            println("-----ROLES Response body: " + response2.body().toString())
+                                        }
+                                    }
+
+                                    override fun onFailure(
+                                        call2: Call<RoleResponseEmbedded>,
+                                        t2: Throwable
+                                    ) {
+                                        println("------ROLES  Network error occurred" + t2.toString())
+                                    }
+                                })
+                            } else {
+
+                                thisContext.buttonComplexArray =
+                                    thisContext.buttonComplexArray.plusElement(
+                                        ButtonComplex(
+                                            newButton,
+                                            tags,
+                                            id[i],
+                                            type
+                                        )
+                                    )
+
+                            }
 
                         } else {
                             println("-----TAGS Response body: " + response.body().toString())
@@ -176,15 +273,28 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             }
         }
         this.buttonsArray = buttonsArr
-        Toast.makeText(
-            applicationContext,
-            "Showing " + this.buttonsArray.size + " results",
-            Toast.LENGTH_SHORT
-        ).show()
+        if (enableRole){
+            for (button in buttonComplexArray) {
+                if (this.buttonComplexArray.isEmpty()){
+                    Toast.makeText(
+                        applicationContext,
+                        "Something went wrong with roles",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    for (i in this.buttonComplexArray.indices) {
+                        buttonComplexArray[i].button.visibility = View.GONE
+                    }
+                }
+            }
 
-
-
-
+        } else {
+            Toast.makeText(
+                applicationContext,
+                "Showing " + this.buttonsArray.size + " results",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
 
 
 
@@ -212,6 +322,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
         if (intent.hasExtra("Role")) {
             this.role = intent.extras!!.getString("Role")!!
+//            this.role = "ADMIN"
 
         } else {
             this.role = "demo1"
@@ -703,6 +814,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
 
         }
+        
+        RoleSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val msg = if (isChecked) role else "All"
+            enableRole = isChecked
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            RoleSwitch.text = msg
+        }
         //Creating buttons for Task Selection List
 //        val buttonAmount = 15
 //        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
@@ -714,11 +832,12 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
 }
 
-class ButtonComplex(bt: Button, tgs: Array<String>, tmpId:Int = 0, tmpType: String = "none"){
+class ButtonComplex(bt: Button, tgs: Array<String>, tmpId:Int = 0, tmpType: String = "none", rls : Array<String> = emptyArray()){
     var button : Button= bt
     var id: Int = tmpId
     var tags : Array<String> = tgs
     var type : String = tmpType
+    var roles : Array<String> = rls
 
 }
 
