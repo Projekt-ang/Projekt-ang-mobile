@@ -6,13 +6,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".SentenceActivity"
-    android:background="@drawable/background_gradient">
+    android:background="@drawable/sentence_background">
 
     <TextView
         android:id="@+id/sentencesActivityHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/border"
         android:gravity="center"
         android:padding="12dp"
         android:text="@string/sentenceAppName"
@@ -22,20 +21,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <TextView
         android:id="@+id/sentenceActivityQuestion"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/Sentence_Activity_Question"
-        android:textColor="#fff"
-        android:textSize="24sp"
+        android:textSize="24dp"
+        android:paddingLeft="24dp"
+        android:textColor="#e5d321"
+        android:textStyle="bold"
+        android:paddingRight="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sentencesActivityHeader" />
 
 
-    <EditText
+    <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/editText"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
@@ -50,7 +50,13 @@
         app:layout_constraintHorizontal_bias="0.034"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sentenceActivityQuestion"
-        />
+
+        android:layout_gravity="center"
+
+        android:orientation="horizontal"
+        app:flChildSpacingForLastRow="align"
+        app:flRowSpacing="8dp"
+        ></com.nex3z.flowlayout.FlowLayout>
 
     <TextView
         android:id="@+id/yourWords"
@@ -58,11 +64,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16sp"
         android:text="@string/Sentences_Activity_Your_words"
-        android:textColor="#fff"
+        android:textColor="#e5d321"
+        android:textStyle="bold"
         android:textSize="24dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        />
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/layoutParent"
@@ -79,14 +89,14 @@
         app:layout_constraintTop_toBottomOf="@+id/yourWords"></com.nex3z.flowlayout.FlowLayout>
 
     <!--    <Button-->
-<!--        android:id="@+id/moveSentence"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="center"-->
-<!--        android:gravity="center"-->
-<!--        android:text="@string/Sentence_Activity_Move"-->
-<!--        android:visibility="invisible"-->
-<!--        />-->
+    <!--        android:id="@+id/moveSentence"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="center"-->
+    <!--        android:gravity="center"-->
+    <!--        android:text="@string/Sentence_Activity_Move"-->
+    <!--        android:visibility="invisible"-->
+    <!--        />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
