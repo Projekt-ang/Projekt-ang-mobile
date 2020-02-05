@@ -37,42 +37,54 @@
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/editText"
+
         android:layout_width="wrap_content"
         android:layout_height="200dp"
+        android:layout_gravity="center"
         android:layout_marginTop="12dp"
         android:clickable="false"
         android:focusable="false"
         android:gravity="top"
+        android:orientation="horizontal"
         android:padding="10dp"
         android:textColor="#000"
         android:textSize="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.034"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sentenceActivityQuestion"
-
-        android:layout_gravity="center"
-
-        android:orientation="horizontal"
         app:flChildSpacingForLastRow="align"
         app:flRowSpacing="8dp"
-        ></com.nex3z.flowlayout.FlowLayout>
+
+        app:layout_constraintEnd_toEndOf="parent"
+
+        app:layout_constraintHorizontal_bias="0.034"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sentenceActivityQuestion">
+
+    </com.nex3z.flowlayout.FlowLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="1dp"
+        android:hint="Przytrzymaj dymek dłużej aby wrócił na miejsce!"
+        app:layout_constraintBottom_toTopOf="@+id/yourWords"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
+
 
     <TextView
         android:id="@+id/yourWords"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16sp"
-        android:text="@string/Sentences_Activity_Your_words"
-        android:textColor="#e5d321"
-        android:textStyle="bold"
-        android:textSize="24dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
+        android:text="@string/Sentences_Activity_Your_words"
+        android:textColor="#e5d321"
+        android:textSize="24dp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/editText" />
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/layoutParent"
@@ -87,6 +99,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/yourWords"></com.nex3z.flowlayout.FlowLayout>
+
+
+    <Button
+        android:id="@+id/buttonCheck"
+        style="@android:style/Widget.DeviceDefault.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:background="@color/cardview_dark_background"
+        android:backgroundTint="#36b23f"
+        android:text="Sprawdź!"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+
 
     <!--    <Button-->
     <!--        android:id="@+id/moveSentence"-->

@@ -135,27 +135,55 @@ class SentenceActivity : AppCompatActivity() {
         sentencesActivityHeader = findViewById(R.id.sentencesActivityHeader)
         yourWords = findViewById(R.id.yourWords)
 
+
         textView.setOnClickListener {
-            if (pressCounter < keys.size) {
+
                 addView(editText, text, findViewById(R.id.editText))
 
+                txt += text.plus(" ")
 
-                txt += text
+            layoutParent.removeView(textView)
+
+
+            layoutParent
 
 //                var toast = Toast.makeText(this, txt, Toast.LENGTH_SHORT)
 //                toast.show()
 
+
                 // miejsce na animacje
                 textView.animate().alpha(0f).duration = 300
                 pressCounter++
-
-                if (pressCounter == new.size) {
-                    doValidate()
-                }
             }
-        }
+
+
         viewParent.addView(textView)
+
+        textView.setOnLongClickListener {
+            addView(layoutParent, text, editText)
+            editText.removeView(textView)
+            txt = txt.replace(text, "")
+            return@setOnLongClickListener true
+        }
+
+//        button.setOnClickListener {
+//            addView(layoutParent, text, editText)
+//            editText.removeView(textView)
+//            txt = txt.replace(text, "")
+//
+////            var toast = Toast.makeText(this, txt, Toast.LENGTH_SHORT)
+////            toast.show()
+//            button.visibility = View.INVISIBLE
+//        }
+        buttonCheck.setOnClickListener {
+            doValidate()
+        }
     }
+
+    fun deleteView() {
+
+    }
+
 
     @SuppressLint("WrongConstant")
     fun doValidate() {
@@ -163,14 +191,14 @@ class SentenceActivity : AppCompatActivity() {
 
 
         pressCounter = 0
-        val editText = findViewById<FlowLayout>(R.id.editText)
+
         val flowLayout = layoutParent
 
 //        var keysData2 = keysData.trim()
 
         var keysData2 = keysData.replace("\\s".toRegex(), "")
 //
-        var keysCheck = txt
+        var keysCheck = txt.replace("\\s".toRegex(), "")
 //        var keysCheck2 = keysCheck.replace("\\s".toRegex(), "")
 
 
