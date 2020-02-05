@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.activity_exercise_selection.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.random.Random
 
 
 class ExerciseSelectionActivity : AppCompatActivity() {
@@ -419,8 +418,9 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                     if (!sentences!![i].polishSentence.isNullOrBlank()) {
                                         buttonNames =
                                             buttonNames.plusElement(sentences!![i].polishSentence.toString())
-                                        buttonIds =
-                                            buttonIds.plusElement(sentences!![i].id!!)
+                                    } else {
+                                        buttonNames =
+                                            buttonNames.plusElement("null")
                                     }
                                 }
                                 println("created buttonNames array")
