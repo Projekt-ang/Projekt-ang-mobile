@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
                         jwt = jwt.substring(0, lastIndex)
 
                         val text = JWTUtils.decoded(jwt)
-                        val regex = Regex("(,\"roles\":\")([A-Za-z]+[A-Za-z_]*)(\")")
+                        val regex = Regex("(,\"roles\":\"[A-Za-z]+_*)([A-Za-z]*)(\")")
                         val matchResults = regex.find(text)
 
                         val role = matchResults!!.groups[2]!!.value

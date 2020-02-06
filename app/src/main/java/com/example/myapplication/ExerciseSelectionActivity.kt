@@ -332,6 +332,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             textViewRole.visibility = VISIBLE
         } else {
             this.role = "demo1"
+            this.enableRole = false
         }
 
 
@@ -412,7 +413,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 for (i in readingVideoTests!!.indices) {
                                     println("Adding buttonName no. " + i.toString())
                                     buttonNames =
-                                        buttonNames.plusElement(readingVideoTests!![i].name!!)
+                                        buttonNames.plusElement(readingVideoTests!![i].name.toString())
                                     buttonIds =
                                         buttonIds.plusElement(readingVideoTests!![i].id!!)
                                 }
@@ -824,10 +825,17 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         }
 
         RoleSwitch.setOnCheckedChangeListener { _, isChecked ->
-            val msg = if (isChecked) role else "All"
-            enableRole = isChecked
-            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
-            RoleSwitch.text = msg
+            if (role != "demo1") {
+                val msg = if (isChecked) role else "All"
+                enableRole = isChecked
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+                RoleSwitch.text = msg
+            } else {
+                enableRole = false
+            }
+        }
+        if (role == "demo1"){
+            enableRole = false
         }
         //Creating buttons for Task Selection List
 //        val buttonAmount = 15
