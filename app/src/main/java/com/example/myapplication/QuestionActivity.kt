@@ -1,16 +1,16 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.widget.ArrayAdapter
-import kotlinx.android.synthetic.main.activity_question.*
 import android.app.AlertDialog
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.ListView
+import androidx.appcompat.app.AppCompatActivity
 import com.example.myapplication.apiclient.model.*
 import com.example.myapplication.apiclient.service.Services
+import kotlinx.android.synthetic.main.activity_question.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -197,5 +197,15 @@ class QuestionActivity : AppCompatActivity() {
         listView.performItemClick(
             listView.adapter.getView(position, null, null), position, position.toLong()
         )
+    }
+
+    override fun onStop() {
+        setResult(2)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        setResult(2)
+        super.onDestroy()
     }
 }

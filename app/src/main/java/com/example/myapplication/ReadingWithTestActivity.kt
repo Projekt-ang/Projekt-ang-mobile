@@ -1,16 +1,15 @@
 package com.example.myapplication
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_reading_with_test.*
 import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.webkit.WebChromeClient
-import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.text.HtmlCompat
 import com.example.myapplication.apiclient.model.ReadingVideoTest
 import com.example.myapplication.apiclient.service.Services
+import kotlinx.android.synthetic.main.activity_reading_with_test.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -58,9 +57,19 @@ class ReadingWithTestActivity : AppCompatActivity() {
             buttonQuestion.setOnClickListener {
                 val intent = Intent(this, QuestionActivity::class.java)
                 intent.putExtra("readingVideoTest",readingVideoTest)
-                startActivity(intent)
+                startActivityForResult(intent, 2)
             }
         }
 
+    }
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == 2) {
+            finish()
+        }
     }
 }
