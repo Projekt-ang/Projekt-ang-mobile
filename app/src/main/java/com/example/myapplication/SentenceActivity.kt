@@ -1,11 +1,11 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -197,21 +197,21 @@ class SentenceActivity : AppCompatActivity() {
 //        var keysData2 = keysData.trim()
 
         var keysData2 = keysData.replace("\\s".toRegex(), "")
-//
+
         var keysCheck = txt.replace("\\s".toRegex(), "")
 //        var keysCheck2 = keysCheck.replace("\\s".toRegex(), "")
 
 
 
         if (keysCheck == keysData2) {
-
-            val toast = Toast.makeText(this, "Dobrze!", 1000)
-            toast.show()
+            buttonCheck.setBackgroundColor(Color.GREEN)
+            buttonCheck.setTextColor(Color.BLACK)
+            buttonCheck.text = "Dobrze!"
             finish()
         } else {
-
-            val toast = Toast.makeText(this, "Żle!", 1000)
-            toast.show()
+            buttonCheck.setBackgroundColor(Color.RED)
+            buttonCheck.setTextColor(Color.BLACK)
+            buttonCheck.text = "Źle!"
             finish()
         }
         keys = shuffleArray(keys)
