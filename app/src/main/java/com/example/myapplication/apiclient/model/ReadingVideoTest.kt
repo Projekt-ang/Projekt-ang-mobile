@@ -24,14 +24,21 @@ class ReadingVideoTest() : Parcelable {
     @SerializedName("name")
     var name: String? = null
 
+    @SerializedName("link")
+    var link: String? = null
+
     constructor(parcel: Parcel) : this() {
         id = parcel.readInt()
         text = parcel.readString()
+        name = parcel.readString()
+        link = parcel.readString()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
         parcel.writeString(text)
+        parcel.writeString(name)
+        parcel.writeString(link)
     }
 
     override fun describeContents(): Int {
@@ -47,4 +54,5 @@ class ReadingVideoTest() : Parcelable {
             return arrayOfNulls(size)
         }
     }
+
 }

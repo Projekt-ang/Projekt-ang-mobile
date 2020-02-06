@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_reading_with_test.*
 import android.content.Intent
+import android.webkit.WebChromeClient
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.core.text.HtmlCompat
 import com.example.myapplication.apiclient.model.ReadingVideoTest
 import com.example.myapplication.apiclient.service.Services
@@ -21,6 +24,14 @@ class ReadingWithTestActivity : AppCompatActivity() {
         if (intent.hasExtra("readingVideoTest")) {
             readingVideoTest = intent.extras!!.getParcelable("readingVideoTest")!!
             textView4.text = HtmlCompat.fromHtml(readingVideoTest.text!!, 0)
+            if (!readingVideoTest.link.isNullOrEmpty()) {
+                val webview = WebView(this)
+                webview.webViewClient = WebViewClient()
+                webview.settings.javaScriptEnabled = true
+                webview.setWebChromeClient(WebChromeClient())
+                webview.loadUrl(readingVideoTest.link)
+                linearLayoutReadingWithTest.addView(webview, 500, 400)
+            }
             buttonQuestion.isEnabled = true
         } else {
             val call: Call<ReadingVideoTest> = Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(53)

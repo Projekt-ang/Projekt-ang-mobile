@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -148,7 +149,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         if (response.code() == 200) {
                             println("----- TAGS Response body: " + response.body().toString())
                             tagsObj = response.body()!!.embedded!!.embedded
-                            var tags : Array<String> = arrayOf()
+                            var tags: Array<String> = arrayOf()
 
 
                             if (!tagsObj.isNullOrEmpty()) {
@@ -158,7 +159,14 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                             }
 
                             thisContext.buttonComplexArray =
-                                thisContext.buttonComplexArray.plusElement(ButtonComplex(newButton, tags, id[i], type))
+                                thisContext.buttonComplexArray.plusElement(
+                                    ButtonComplex(
+                                        newButton,
+                                        tags,
+                                        id[i],
+                                        type
+                                    )
+                                )
 
                         } else {
                             println("-----TAGS Response body: " + response.body().toString())
@@ -184,11 +192,6 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         ).show()
 
 
-
-
-
-
-
         //returns Array of buttons for future refference i.e. button editing, etc, but the array is also added to global variable
         return buttonsArr
     }
@@ -210,10 +213,14 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         var sentences: Array<Sentence>? = null
 
 
-
         if (intent.hasExtra("Role")) {
             this.role = intent.extras!!.getString("Role")!!
-
+            when (role) {
+                "ROLE_LEKTOR" -> textViewRole.text = "Role: Lektor"
+                "ROLE_USER" -> textViewRole.text = "Role: User"
+                "ROLE_ADMIN" -> textViewRole.text = "Role: Admin"
+            }
+            textViewRole.visibility = VISIBLE
         } else {
             this.role = "demo1"
         }
@@ -242,27 +249,29 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     for (i in btArr.indices) {
                         btArr[i].setOnClickListener() {
                             //ENVOKING DEMO ACTIVITY WITH INTENT demo
-                        val call: Call<ReadingVideoTest> =
-                            Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(demo_readingVideoTest_id)
-                        call.enqueue(object : Callback<ReadingVideoTest> {
-                            override fun onResponse(
-                                call: Call<ReadingVideoTest>,
-                                response: Response<ReadingVideoTest>
-                            ) {
-                                if (response.code() == 200) {
-                                    readingVideoTest = response.body()!!
-                                    //START ACTIVITY
-                                    val intent =
-                                        Intent(thisContext, ReadingWithTestActivity::class.java)
-                                    intent.putExtra("readingVideoTest", readingVideoTest)
-                                    thisContext.startActivity(intent)
+                            val call: Call<ReadingVideoTest> =
+                                Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTest(
+                                    demo_readingVideoTest_id
+                                )
+                            call.enqueue(object : Callback<ReadingVideoTest> {
+                                override fun onResponse(
+                                    call: Call<ReadingVideoTest>,
+                                    response: Response<ReadingVideoTest>
+                                ) {
+                                    if (response.code() == 200) {
+                                        readingVideoTest = response.body()!!
+                                        //START ACTIVITY
+                                        val intent =
+                                            Intent(thisContext, ReadingWithTestActivity::class.java)
+                                        intent.putExtra("readingVideoTest", readingVideoTest)
+                                        thisContext.startActivity(intent)
+                                    }
                                 }
-                            }
 
-                            override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
-                                println("-- Network error occured")
-                            }
-                        })
+                                override fun onFailure(call: Call<ReadingVideoTest>, t: Throwable) {
+                                    println("-- Network error occured")
+                                }
+                            })
                         }
                     }
 
@@ -312,16 +321,16 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                            readingVideoTest = readingVideoTests!![i]
-                                            val intent =
-                                                Intent(
-                                                    thisContext,
-                                                    ReadingWithTestActivity::class.java
-                                                )
-                                            intent.putExtra("readingVideoTest", readingVideoTest)
-                                            thisContext.startActivity(intent)
-                                        }
+                                        readingVideoTest = readingVideoTests!![i]
+                                        val intent =
+                                            Intent(
+                                                thisContext,
+                                                ReadingWithTestActivity::class.java
+                                            )
+                                        intent.putExtra("readingVideoTest", readingVideoTest)
+                                        thisContext.startActivity(intent)
                                     }
+                                }
 
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
                                 println("Successfully created buttons")
@@ -340,8 +349,8 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     println("Finished downloading ReadingVideoTests this many ->" + readingVideoTests?.size.toString() + " <- pages.")
 
                 }
-            this.openTab = "readingVideoTest"
-            }else {
+                this.openTab = "readingVideoTest"
+            } else {
                 LinearLayoutTaskSelection.visibility = View.INVISIBLE
                 this.openTab = "none"
             }
@@ -368,9 +377,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         btArr[i].setOnClickListener() {
 
                             var sentence: Sentence? = null
-                            val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(demo_sentence_id)
+                            val call: Call<Sentence> =
+                                Services.EXERCISE_SERVICE.getSentence(demo_sentence_id)
                             call.enqueue(object : Callback<Sentence> {
-                                override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
+                                override fun onResponse(
+                                    call: Call<Sentence>,
+                                    response: Response<Sentence>
+                                ) {
                                     if (response.code() == 200) {
                                         sentence = response.body()!!
                                         //START ACTIVITY
@@ -393,7 +406,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     }
 
 
-                }else {
+                } else {
                     val demo_sentence_id: Int = 255
                     var sentence: Sentence? = null
                     var buttonNames: Array<String> = emptyArray()
@@ -435,15 +448,15 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                            sentence = sentences!![i]
-                                            val intent =
-                                                Intent(
-                                                    thisContext,
-                                                    SentenceActivity::class.java
-                                                )
-                                            intent.putExtra("sentence", sentence)
-                                            thisContext.startActivity(intent)
-                                        }
+                                        sentence = sentences!![i]
+                                        val intent =
+                                            Intent(
+                                                thisContext,
+                                                SentenceActivity::class.java
+                                            )
+                                        intent.putExtra("sentence", sentence)
+                                        thisContext.startActivity(intent)
+                                    }
 
                                 }
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -464,7 +477,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
                 }
                 this.openTab = "sentences"
-            }else {
+            } else {
                 LinearLayoutTaskSelection.visibility = View.INVISIBLE
                 this.openTab = "none"
             }
@@ -493,9 +506,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         btArr[i].setOnClickListener() {
                             //ENVOKING DEMO ACTIVITY WITH INTENT demo
                             var glossarie: Glossarie? = null
-                            val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(demo_glossarie_id)
+                            val call: Call<Glossarie> =
+                                Services.EXERCISE_SERVICE.getGlossarie(demo_glossarie_id)
                             call.enqueue(object : Callback<Glossarie> {
-                                override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
+                                override fun onResponse(
+                                    call: Call<Glossarie>,
+                                    response: Response<Glossarie>
+                                ) {
                                     if (response.code() == 200) {
                                         glossarie = response.body()!!
                                         //START ACTIVITY
@@ -560,16 +577,16 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                            glossarie = glossaries!![i]
-                                            val intent =
-                                                Intent(
-                                                    thisContext,
-                                                    FalshcardsActivity::class.java
-                                                )
-                                            intent.putExtra("glossarie", glossarie)
-                                            thisContext.startActivity(intent)
-                                        }
+                                        glossarie = glossaries!![i]
+                                        val intent =
+                                            Intent(
+                                                thisContext,
+                                                FalshcardsActivity::class.java
+                                            )
+                                        intent.putExtra("glossarie", glossarie)
+                                        thisContext.startActivity(intent)
                                     }
+                                }
 
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
                                 println("Successfully created buttons")
@@ -593,7 +610,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 LinearLayoutTaskSelection.visibility = View.INVISIBLE
                 this.openTab = "none"
             }
-        
+
         }
 
 
@@ -608,15 +625,15 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
             else {
-                if (this.buttonsArray.isEmpty()){
+                if (this.buttonsArray.isEmpty()) {
                     Toast.makeText(
                         applicationContext,
                         "Select non empty category fisrst!",
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
-                    for (i in this.buttonsArray.indices){
-                        if ( this.buttonsArray[i].text.toString().contains(exerciseSearchText.text.toString())){
+                    for (i in this.buttonsArray.indices) {
+                        if (this.buttonsArray[i].text.toString().contains(exerciseSearchText.text.toString())) {
                             buttonsArray[i].visibility = View.VISIBLE
                         } else {
                             buttonsArray[i].visibility = View.GONE
@@ -627,14 +644,14 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             }
         }
 
-        exerciseSearchTagButton.setOnClickListener(){
+        exerciseSearchTagButton.setOnClickListener() {
             if (exerciseSearchTagText.text.toString() == "Search by tag..." || exerciseSearchTagText.text.toString() == this.previousSearch) Toast.makeText(
                 applicationContext,
                 "Write a search phrase first!",
                 Toast.LENGTH_SHORT
             ).show()
             else {
-                if (this.buttonComplexArray.isEmpty()){
+                if (this.buttonComplexArray.isEmpty()) {
                     Toast.makeText(
                         applicationContext,
                         "Select non empty category first!",
@@ -642,7 +659,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     ).show()
                 } else {
                     newButtonComplexArray = arrayOf()
-                    for (i in this.buttonComplexArray.indices){
+                    for (i in this.buttonComplexArray.indices) {
                         buttonComplexArray[i].button.visibility = View.GONE
                         for (j in this.buttonComplexArray[i].tags.indices) {
                             if (this.buttonComplexArray[i].tags[j].contains(
@@ -652,15 +669,16 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 buttonComplexArray[i].button.visibility = View.VISIBLE
                             }
                         }
-                        if (buttonComplexArray[i].button.visibility == View.VISIBLE){
-                            newButtonComplexArray = newButtonComplexArray.plusElement(buttonComplexArray[i])
+                        if (buttonComplexArray[i].button.visibility == View.VISIBLE) {
+                            newButtonComplexArray =
+                                newButtonComplexArray.plusElement(buttonComplexArray[i])
                         }
                     }
 
 
-                    var glossarieSetIds : ArrayList<Int> = arrayListOf()
+                    var glossarieSetIds: ArrayList<Int> = arrayListOf()
 
-                    for (button in newButtonComplexArray){
+                    for (button in newButtonComplexArray) {
                         if (button.type == "glossarie") {
 
                             if (!glossaries.isNullOrEmpty()) {
@@ -672,13 +690,17 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    for (button in newButtonComplexArray){
+                    for (button in newButtonComplexArray) {
                         if (button.type == "glossarie") {
 
                             if (!glossaries.isNullOrEmpty()) {
                                 for (glossarie in glossaries!!) {
                                     button.button.setOnClickListener() {
-                                        Toast.makeText(thisContext, "Launching " + exerciseSearchTagText.text.toString() + " set", Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            thisContext,
+                                            "Launching " + exerciseSearchTagText.text.toString() + " set",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                         println("--------------------Launching " + exerciseSearchTagText.text.toString() + " set")
 
                                         val intent =
@@ -714,11 +736,11 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
 }
 
-class ButtonComplex(bt: Button, tgs: Array<String>, tmpId:Int = 0, tmpType: String = "none"){
-    var button : Button= bt
+class ButtonComplex(bt: Button, tgs: Array<String>, tmpId: Int = 0, tmpType: String = "none") {
+    var button: Button = bt
     var id: Int = tmpId
-    var tags : Array<String> = tgs
-    var type : String = tmpType
+    var tags: Array<String> = tgs
+    var type: String = tmpType
 
 }
 

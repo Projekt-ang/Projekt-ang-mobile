@@ -2,19 +2,21 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.myapplication.apiclient.model.JWTToken
+import com.example.myapplication.apiclient.model.JWTUtils
 import com.example.myapplication.apiclient.model.User
-import com.example.myapplication.apiclient.model.UserAllResponseEmbedded
+import com.example.myapplication.apiclient.model.UsernamePasswordParams
 import com.example.myapplication.apiclient.service.Services
-import kotlinx.android.synthetic.main.activity_exercise_selection.*
+import com.google.gson.JsonObject
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 private val ADD_TASK_REQUEST = 1
 
@@ -39,27 +41,31 @@ class MainActivity : AppCompatActivity() {
             var user: User? = null
             var users: Array<User>? = null
 
-            println("downloading Users pages")
-            val call: Call<UserAllResponseEmbedded> =
-                Services.EXERCISE_SERVICE.getAllUsers()
-            call.enqueue(object : Callback<UserAllResponseEmbedded> {
+            val json = JsonObject()
+            json.addProperty("username", usernm)
+            json.addProperty("password", passwd)
+
+            val params = UsernamePasswordParams(usernm, passwd)
+            val call: Call<JWTToken> = Services.LOGIN_SERVICE.authenticate(json)
+            call.enqueue(object : Callback<JWTToken> {
                 override fun onResponse(
-                    call: Call<UserAllResponseEmbedded>,
-                    response: Response<UserAllResponseEmbedded>
+                    call: Call<JWTToken>,
+                    response: Response<JWTToken>
                 ) {
                     if (response.code() == 200) {
-                        println("Response body: " + response.body().toString())
-                        users = response.body()!!.embedded!!.embedded
-                        for (i in users!!.indices){
-                            //HASHING TO BE ADDED HERE
-                            if (users!![i].username.toString() == usernm && users!![i].password.toString() == passwd) {
-                                val intent = Intent(thisContext, ExerciseSelectionActivity::class.java)
-                                intent.putExtra("Role", usernm)
-                                thisContext.startActivity(intent)
-                            }
-                        }
-                    }else{
+                        val jwt = response.body()
+                        val text = JWTUtils.decoded(jwt?.text!!)
 
+                        val regex = Regex("(,\"roles\":\")([A-Za-z]+[A-Za-z_]*)(\")")
+                        val matchResults = regex.find(text)
+
+                        val role = matchResults!!.groups[2]!!.value
+
+
+                        val intent = Intent(thisContext, ExerciseSelectionActivity::class.java)
+                        intent.putExtra("Role", role)
+                        thisContext.startActivity(intent)
+                    }else{
                         Toast.makeText(thisContext, "Network error - sorry", Toast.LENGTH_SHORT).show()
                         println("Response code: " + response.code().toString())
                     }
@@ -67,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(
-                    call: Call<UserAllResponseEmbedded>,
+                    call: Call<JWTToken>,
                     t: Throwable
                 ) {
                     println("-- Network error occurred" + t.toString())
