@@ -47,6 +47,13 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
+                <Switch
+                    android:id="@+id/RoleSwitch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:text="Enable results only for your role" />
+
                 <Button
                     android:id="@+id/buttonReadingTestExercise"
                     android:layout_width="match_parent"
@@ -109,7 +116,7 @@
                     android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:text="Search For Exercises by title..."
+                    android:hint="Search For Exercises by title..."
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -133,7 +140,7 @@
                     android:layout_marginEnd="16dp"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:text="Search by tag..."
+                    android:hint="Search by tag..."
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/ExerciseGoToSearchButton" />

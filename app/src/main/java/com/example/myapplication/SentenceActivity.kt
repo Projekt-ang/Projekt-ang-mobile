@@ -1,12 +1,11 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -23,16 +22,11 @@ import java.util.*
 
 class SentenceActivity : AppCompatActivity() {
 
-
-
-
-
     private var pressCounter = 0
-    private val maxPressCounter = 10
-    var polish = "Kamil bardzo lubi pomarańcze"
-
-    var keysData = "Kamil likes oranges very much"
-
+    //    private val maxPressCounter = 10
+    private var polish = "Marta bardzo lubi pomarańcze"
+    private var keysData = "Kamil likes oranges very much"
+    var txt = ""
 
 //    var sentence = (0..keysData.size).random()
 //    var new = keysData[sentence]
@@ -51,6 +45,7 @@ class SentenceActivity : AppCompatActivity() {
     //    private val answer = "Kamil likes oranges very much"
     private lateinit var sentencesActivityHeader: TextView
     private lateinit var yourWords: TextView
+    private lateinit var sentenceActivityQuesstion: TextView
 
 
 
@@ -59,19 +54,10 @@ class SentenceActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sentence)
 
-//        var sentence : Sentence? = null
-//        if (intent.hasExtra("sentence")) {
-//            sentence = intent.extras!!.getParcelable("sentence")
-//            if (sentence != null) {
-//                polish = sentence!!.polishSentence.toString()
-//                keysData = sentence!!.englishSentence.toString()
-//            }
-//        }
-
 
         var sentences : Sentence?
-        if (intent.hasExtra("sentences")) {
-            sentences = intent.extras!!.getParcelable("sentences")!!
+        if (intent.hasExtra("sentence")) {
+            sentences = intent.extras!!.getParcelable("sentence")!!
             if (sentences != null) {
                 polish = sentences!!.polishSentence.toString()
                 keysData = sentences!!.englishSentence.toString()
@@ -100,6 +86,11 @@ class SentenceActivity : AppCompatActivity() {
             })
         }
 
+        var txt = findViewById<TextView>(R.id.sentenceActivityQuestion)
+        txt.text = polish
+
+        new = keysData.split(" ").toTypedArray()
+        var keys = shuffleArray(new)
 
         for (key in keys) {
             addView(
@@ -121,7 +112,8 @@ class SentenceActivity : AppCompatActivity() {
         return ar
     }
 
-    fun addView(viewParent: FlowLayout, text: String, editText: EditText) {
+
+    fun addView(viewParent: FlowLayout, text: String, editText: FlowLayout) {
         val flowLayoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.WRAP_CONTENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -134,115 +126,96 @@ class SentenceActivity : AppCompatActivity() {
         textView.background = AppCompatResources.getDrawable(this, R.drawable.border_sentence)
         ContextCompat.getColor(this, R.color.colorLight)
         textView.gravity = Gravity.NO_GRAVITY
-        textView.setPadding(36,16,36,16)
+        textView.setPadding(32,16,32,16)
         textView.text = text
-        textView.isClickable = true
-        textView.isFocusable = true
+        textView.isClickable = false
+        textView.isFocusable = false
         textView.textSize = 24f
 
         sentencesActivityHeader = findViewById(R.id.sentencesActivityHeader)
         yourWords = findViewById(R.id.yourWords)
 
-        textView.setOnClickListener {
-            if (pressCounter < maxPressCounter) {
-                if (pressCounter == 0)
-                    editText.setText("")
 
-                editText.setText(editText.text.toString() + text.plus(" "))
+        textView.setOnClickListener {
+
+                addView(editText, text, findViewById(R.id.editText))
+
+                txt += text.plus(" ")
+
+            layoutParent.removeView(textView)
+
+
+            layoutParent
+
+//                var toast = Toast.makeText(this, txt, Toast.LENGTH_SHORT)
+//                toast.show()
+
 
                 // miejsce na animacje
                 textView.animate().alpha(0f).duration = 300
                 pressCounter++
-
-                if (pressCounter == new.size) {
-                    doValidate()
-                }
             }
-        }
+
+
         viewParent.addView(textView)
-    }
 
+        textView.setOnLongClickListener {
+            addView(layoutParent, text, editText)
+            editText.removeView(textView)
+            txt = txt.replace(text, "")
+            return@setOnLongClickListener true
+        }
 
-    /*
-    private fun reverseView(viewParent: FlowLayout, questions: String) {
-        val flowLayoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-        flowLayoutParams.rightMargin = 20
-
-        val textView = TextView(this)
-
-        textView.layoutParams = flowLayoutParams
-        textView.background = AppCompatResources.getDrawable(this, R.drawable.border_sentence)
-        ContextCompat.getColor(this, R.color.colorGray)
-        textView.gravity = Gravity.NO_GRAVITY
-        textView.setPadding(36,16,36,16)
-        textView.questions = questions
-        textView.isClickable = true
-        textView.isFocusable = true
-        textView.textSize = 24f
-
-
-        sentencesActivityHeader = findViewById(R.id.sentencesActivityHeader)
-        sentenceActivityQuestion = findViewById(R.id.sentenceActivityQuestion)
-        yourWords = findViewById(R.id.yourWords)
-
-        textView.setOnClickListener {
-            if (pressCounter < maxPressCounter) {
-                if (pressCounter == 0)
-
-                // miejsce na animacje
-                textView.animate().alpha(0f).duration = 300
-                pressCounter++
-
-                // miejsce na animacje
-                textView.animate().alpha(0f).duration = 300
-                pressCounter++
-
-                if (pressCounter == maxPressCounter)
-                    doValidate()
-
-
-            }
+//        button.setOnClickListener {
+//            addView(layoutParent, text, editText)
+//            editText.removeView(textView)
+//            txt = txt.replace(text, "")
+//
+////            var toast = Toast.makeText(this, txt, Toast.LENGTH_SHORT)
+////            toast.show()
+//            button.visibility = View.INVISIBLE
+//        }
+        buttonCheck.setOnClickListener {
+            doValidate()
         }
     }
-    */
 
+    fun deleteView() {
 
-
+    }
 
 
     @SuppressLint("WrongConstant")
     fun doValidate() {
+
+
+
         pressCounter = 0
-        val editText = findViewById<EditText>(R.id.editText)
+
         val flowLayout = layoutParent
 
 //        var keysData2 = keysData.trim()
 
         var keysData2 = keysData.replace("\\s".toRegex(), "")
 
-        if (editText.text.toString() == keysData2) {
-            editText.setText("")
-            val toast = Toast.makeText(this, "Dobrze!", 1000)
-            toast.show()
+        var keysCheck = txt.replace("\\s".toRegex(), "")
+//        var keysCheck2 = keysCheck.replace("\\s".toRegex(), "")
 
+
+
+        if (keysCheck == keysData2) {
+            buttonCheck.setBackgroundColor(Color.GREEN)
+            buttonCheck.setTextColor(Color.BLACK)
+            buttonCheck.text = "Dobrze!"
+            finish()
         } else {
-            editText.setText("")
-            val toast = Toast.makeText(this, "Żle!", 1000)
-            toast.show()
+            buttonCheck.setBackgroundColor(Color.RED)
+            buttonCheck.setTextColor(Color.BLACK)
+            buttonCheck.text = "Źle!"
+            finish()
         }
-
         keys = shuffleArray(keys)
         flowLayout.removeAllViews()
 
-        for (key in keys) {
-            addView(flowLayout, key, editText)
-        }
-
-
     }
-
-
 }

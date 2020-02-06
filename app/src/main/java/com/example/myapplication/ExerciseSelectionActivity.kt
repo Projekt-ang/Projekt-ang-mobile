@@ -25,6 +25,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
     var buttonComplexArray: Array<ButtonComplex> = arrayOf()
     var newButtonComplexArray: Array<ButtonComplex> = arrayOf()
     private var role: String? = "demo"
+    private var enableRole : Boolean = true
     var thisContext = this
     var openTab = "none"
 
@@ -117,27 +118,38 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             newButton.setOnClickListener {
                 Toast.makeText(thisContext, "Add Reading Test here.", Toast.LENGTH_SHORT).show()
             }
+            if (enableRole){
+                newButton.visibility = View.GONE
+            }
             DestLinearLayout.addView(newButton)
             buttonsArr = buttonsArr.plusElement(newButton)
 
 
             if (!id.isNullOrEmpty() && type != "none") {
                 var tagsObj: Array<Tags>? = arrayOf()
+                var rolesObj: Array<Role>? = arrayOf()
 
                 //temporal value
                 var call: Call<TagsResponseEmbedded>? = null
+                var call2: Call<RoleResponseEmbedded>? = null
 
                 if (type == "readingVideoTest") {
                     call =
                         Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTestTags(id[i])
+                    call2 =
+                        Services.READING_VIDEO_TEST_SERVICE.getReadingVideoTestRoles(id[i])
                 }
                 if (type == "glossarie") {
                     call =
                         Services.EXERCISE_SERVICE.getGlossarieTags(id[i])
+                    call2 =
+                        Services.EXERCISE_SERVICE.getGlossarieRoles(id[i])
                 }
                 if (type == "sentences") {
                     call =
                         Services.EXERCISE_SERVICE.getSentenceTags(id[i])
+                    call2 =
+                        Services.EXERCISE_SERVICE.getSentenceRoles(id[i])
                 }
                 var thisContext = this
 
@@ -149,7 +161,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         if (response.code() == 200) {
                             println("----- TAGS Response body: " + response.body().toString())
                             tagsObj = response.body()!!.embedded!!.embedded
-                            var tags: Array<String> = arrayOf()
+                            var tags : Array<String> = arrayOf()
 
 
                             if (!tagsObj.isNullOrEmpty()) {
@@ -158,15 +170,93 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 }
                             }
 
-                            thisContext.buttonComplexArray =
-                                thisContext.buttonComplexArray.plusElement(
-                                    ButtonComplex(
-                                        newButton,
-                                        tags,
-                                        id[i],
-                                        type
+
+
+                            if (enableRole){
+
+                                call2!!.enqueue(object : Callback<RoleResponseEmbedded> {
+                                    override fun onResponse(
+                                        call2: Call<RoleResponseEmbedded>,
+                                        response2: Response<RoleResponseEmbedded>
+                                    ) {
+                                        if (response2.code() == 200) {
+                                            println("----- ROLES Response body: " + response2.body().toString())
+                                            rolesObj = response2.body()!!.embedded!!.embedded
+                                            var roles : Array<String> = arrayOf()
+
+
+                                            if (!rolesObj.isNullOrEmpty()) {
+                                                for (r in rolesObj!!) {
+                                                    roles = roles.plusElement(r.text.toString())
+                                                }
+                                            }
+
+                                            thisContext.buttonComplexArray =
+                                                thisContext.buttonComplexArray.plusElement(
+                                                    ButtonComplex(
+                                                        newButton,
+                                                        tags,
+                                                        id[i],
+                                                        type,
+                                                        rls = roles
+                                                    )
+                                                )
+                                            for (button in buttonComplexArray) {
+                                                if (thisContext.buttonComplexArray.isEmpty()){
+                                                    Toast.makeText(
+                                                        applicationContext,
+                                                        "Something went wrong with roles",
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                } else {
+                                                    newButtonComplexArray = arrayOf()
+                                                    for (i in thisContext.buttonComplexArray.indices) {
+                                                        for (j in thisContext.buttonComplexArray[i].roles.indices) {
+                                                            println("-----+++++++ROLES Role found: " + thisContext.buttonComplexArray[i].roles[j])
+                                                            var rrrrr = thisContext.buttonComplexArray[i].roles[j]
+                                                            if (thisContext.buttonComplexArray[i].roles[j].contains(
+                                                                    role.toString().toUpperCase()
+                                                                )
+                                                            ) {
+                                                                buttonComplexArray[i].button.visibility = View.VISIBLE
+                                                            } else {
+
+                                                            }
+                                                        }
+                                                        if (buttonComplexArray[i].button.visibility == View.VISIBLE) {
+                                                            newButtonComplexArray =
+                                                                newButtonComplexArray.plusElement(buttonComplexArray[i])
+                                                        }
+                                                    }
+                                                    var tmp = newButtonComplexArray
+                                                    buttonComplexArray = newButtonComplexArray
+                                                }
+                                            }
+                                        } else {
+                                            println("-----ROLES Response body: " + response2.body().toString())
+                                        }
+                                    }
+
+                                    override fun onFailure(
+                                        call2: Call<RoleResponseEmbedded>,
+                                        t2: Throwable
+                                    ) {
+                                        println("------ROLES  Network error occurred" + t2.toString())
+                                    }
+                                })
+                            } else {
+
+                                thisContext.buttonComplexArray =
+                                    thisContext.buttonComplexArray.plusElement(
+                                        ButtonComplex(
+                                            newButton,
+                                            tags,
+                                            id[i],
+                                            type
+                                        )
                                     )
-                                )
+
+                            }
 
                         } else {
                             println("-----TAGS Response body: " + response.body().toString())
@@ -185,11 +275,29 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             }
         }
         this.buttonsArray = buttonsArr
-        Toast.makeText(
-            applicationContext,
-            "Showing " + this.buttonsArray.size + " results",
-            Toast.LENGTH_SHORT
-        ).show()
+        if (enableRole){
+            for (button in buttonComplexArray) {
+                if (this.buttonComplexArray.isEmpty()){
+                    Toast.makeText(
+                        applicationContext,
+                        "Something went wrong with roles",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    for (i in this.buttonComplexArray.indices) {
+                        buttonComplexArray[i].button.visibility = View.GONE
+                    }
+                }
+            }
+
+        } else {
+            Toast.makeText(
+                applicationContext,
+                "Showing " + this.buttonsArray.size + " results",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+
 
 
         //returns Array of buttons for future refference i.e. button editing, etc, but the array is also added to global variable
@@ -211,6 +319,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
         var glossaries: Array<Glossarie>? = null
         var readingVideoTests: Array<ReadingVideoTest>? = null
         var sentences: Array<Sentence>? = null
+
 
 
         if (intent.hasExtra("Role")) {
@@ -321,16 +430,16 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                        readingVideoTest = readingVideoTests!![i]
-                                        val intent =
-                                            Intent(
-                                                thisContext,
-                                                ReadingWithTestActivity::class.java
-                                            )
-                                        intent.putExtra("readingVideoTest", readingVideoTest)
-                                        thisContext.startActivity(intent)
+                                            readingVideoTest = readingVideoTests!![i]
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    ReadingWithTestActivity::class.java
+                                                )
+                                            intent.putExtra("readingVideoTest", readingVideoTest)
+                                            thisContext.startActivity(intent)
+                                        }
                                     }
-                                }
 
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
                                 println("Successfully created buttons")
@@ -377,13 +486,9 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         btArr[i].setOnClickListener() {
 
                             var sentence: Sentence? = null
-                            val call: Call<Sentence> =
-                                Services.EXERCISE_SERVICE.getSentence(demo_sentence_id)
+                            val call: Call<Sentence> = Services.EXERCISE_SERVICE.getSentence(demo_sentence_id)
                             call.enqueue(object : Callback<Sentence> {
-                                override fun onResponse(
-                                    call: Call<Sentence>,
-                                    response: Response<Sentence>
-                                ) {
+                                override fun onResponse(call: Call<Sentence>, response: Response<Sentence>) {
                                     if (response.code() == 200) {
                                         sentence = response.body()!!
                                         //START ACTIVITY
@@ -432,8 +537,9 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                     if (!sentences!![i].polishSentence.isNullOrBlank()) {
                                         buttonNames =
                                             buttonNames.plusElement(sentences!![i].polishSentence.toString())
-                                        buttonIds =
-                                            buttonIds.plusElement(sentences!![i].id!!)
+                                    } else {
+                                        buttonNames =
+                                            buttonNames.plusElement("null")
                                     }
                                 }
                                 println("created buttonNames array")
@@ -448,15 +554,15 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                        sentence = sentences!![i]
-                                        val intent =
-                                            Intent(
-                                                thisContext,
-                                                SentenceActivity::class.java
-                                            )
-                                        intent.putExtra("sentence", sentence)
-                                        thisContext.startActivity(intent)
-                                    }
+                                            sentence = sentences!![i]
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    SentenceActivity::class.java
+                                                )
+                                            intent.putExtra("sentence", sentence)
+                                            thisContext.startActivity(intent)
+                                        }
 
                                 }
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
@@ -477,7 +583,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
                 }
                 this.openTab = "sentences"
-            } else {
+            }else {
                 LinearLayoutTaskSelection.visibility = View.INVISIBLE
                 this.openTab = "none"
             }
@@ -506,13 +612,9 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                         btArr[i].setOnClickListener() {
                             //ENVOKING DEMO ACTIVITY WITH INTENT demo
                             var glossarie: Glossarie? = null
-                            val call: Call<Glossarie> =
-                                Services.EXERCISE_SERVICE.getGlossarie(demo_glossarie_id)
+                            val call: Call<Glossarie> = Services.EXERCISE_SERVICE.getGlossarie(demo_glossarie_id)
                             call.enqueue(object : Callback<Glossarie> {
-                                override fun onResponse(
-                                    call: Call<Glossarie>,
-                                    response: Response<Glossarie>
-                                ) {
+                                override fun onResponse(call: Call<Glossarie>, response: Response<Glossarie>) {
                                     if (response.code() == 200) {
                                         glossarie = response.body()!!
                                         //START ACTIVITY
@@ -577,16 +679,16 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 for (i in thisContext.buttonsArray.indices) {
                                     thisContext.buttonsArray[i].setOnClickListener() {
 
-                                        glossarie = glossaries!![i]
-                                        val intent =
-                                            Intent(
-                                                thisContext,
-                                                FalshcardsActivity::class.java
-                                            )
-                                        intent.putExtra("glossarie", glossarie)
-                                        thisContext.startActivity(intent)
+                                            glossarie = glossaries!![i]
+                                            val intent =
+                                                Intent(
+                                                    thisContext,
+                                                    FalshcardsActivity::class.java
+                                                )
+                                            intent.putExtra("glossarie", glossarie)
+                                            thisContext.startActivity(intent)
+                                        }
                                     }
-                                }
 
                                 LinearLayoutTaskSelection.visibility = View.VISIBLE
                                 println("Successfully created buttons")
@@ -610,7 +712,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 LinearLayoutTaskSelection.visibility = View.INVISIBLE
                 this.openTab = "none"
             }
-
+        
         }
 
 
@@ -625,15 +727,15 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
             else {
-                if (this.buttonsArray.isEmpty()) {
+                if (this.buttonsArray.isEmpty()){
                     Toast.makeText(
                         applicationContext,
                         "Select non empty category fisrst!",
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
-                    for (i in this.buttonsArray.indices) {
-                        if (this.buttonsArray[i].text.toString().contains(exerciseSearchText.text.toString())) {
+                    for (i in this.buttonsArray.indices){
+                        if ( this.buttonsArray[i].text.toString().contains(exerciseSearchText.text.toString())){
                             buttonsArray[i].visibility = View.VISIBLE
                         } else {
                             buttonsArray[i].visibility = View.GONE
@@ -644,14 +746,14 @@ class ExerciseSelectionActivity : AppCompatActivity() {
             }
         }
 
-        exerciseSearchTagButton.setOnClickListener() {
+        exerciseSearchTagButton.setOnClickListener(){
             if (exerciseSearchTagText.text.toString() == "Search by tag..." || exerciseSearchTagText.text.toString() == this.previousSearch) Toast.makeText(
                 applicationContext,
                 "Write a search phrase first!",
                 Toast.LENGTH_SHORT
             ).show()
             else {
-                if (this.buttonComplexArray.isEmpty()) {
+                if (this.buttonComplexArray.isEmpty()){
                     Toast.makeText(
                         applicationContext,
                         "Select non empty category first!",
@@ -659,7 +761,7 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                     ).show()
                 } else {
                     newButtonComplexArray = arrayOf()
-                    for (i in this.buttonComplexArray.indices) {
+                    for (i in this.buttonComplexArray.indices){
                         buttonComplexArray[i].button.visibility = View.GONE
                         for (j in this.buttonComplexArray[i].tags.indices) {
                             if (this.buttonComplexArray[i].tags[j].contains(
@@ -669,14 +771,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                                 buttonComplexArray[i].button.visibility = View.VISIBLE
                             }
                         }
-                        if (buttonComplexArray[i].button.visibility == View.VISIBLE) {
-                            newButtonComplexArray =
-                                newButtonComplexArray.plusElement(buttonComplexArray[i])
+                        if (buttonComplexArray[i].button.visibility == View.VISIBLE){
+                            newButtonComplexArray = newButtonComplexArray.plusElement(buttonComplexArray[i])
                         }
                     }
 
 
-                    var glossarieSetIds: ArrayList<Int> = arrayListOf()
+                    var glossarieSetIds : ArrayList<Int> = arrayListOf()
 
                     for (button in newButtonComplexArray) {
                         if (button.type == "glossarie") {
@@ -690,17 +791,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    for (button in newButtonComplexArray) {
+                    for (button in newButtonComplexArray){
                         if (button.type == "glossarie") {
 
                             if (!glossaries.isNullOrEmpty()) {
                                 for (glossarie in glossaries!!) {
                                     button.button.setOnClickListener() {
-                                        Toast.makeText(
-                                            thisContext,
-                                            "Launching " + exerciseSearchTagText.text.toString() + " set",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        Toast.makeText(thisContext, "Launching " + exerciseSearchTagText.text.toString() + " set", Toast.LENGTH_SHORT).show()
                                         println("--------------------Launching " + exerciseSearchTagText.text.toString() + " set")
 
                                         val intent =
@@ -725,6 +822,13 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
 
         }
+
+        RoleSwitch.setOnCheckedChangeListener { _, isChecked ->
+            val msg = if (isChecked) role else "All"
+            enableRole = isChecked
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+            RoleSwitch.text = msg
+        }
         //Creating buttons for Task Selection List
 //        val buttonAmount = 15
 //        var buttonNames = Array(buttonAmount) { i -> "TestButton no. $i" }
@@ -736,11 +840,12 @@ class ExerciseSelectionActivity : AppCompatActivity() {
 
 }
 
-class ButtonComplex(bt: Button, tgs: Array<String>, tmpId: Int = 0, tmpType: String = "none") {
-    var button: Button = bt
+class ButtonComplex(bt: Button, tgs: Array<String>, tmpId:Int = 0, tmpType: String = "none", rls : Array<String> = emptyArray()){
+    var button : Button= bt
     var id: Int = tmpId
-    var tags: Array<String> = tgs
-    var type: String = tmpType
+    var tags : Array<String> = tgs
+    var type : String = tmpType
+    var roles : Array<String> = rls
 
 }
 
